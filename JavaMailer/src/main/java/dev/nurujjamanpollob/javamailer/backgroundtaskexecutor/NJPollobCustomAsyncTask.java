@@ -41,7 +41,6 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
 
     private void postResult(Result result) {
         Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT, new NJPollobCustomAsyncTaskResult<>(this, result));
-        message.setTarget(new Handler(Looper.getMainLooper()));
         message.sendToTarget();
     }
 
@@ -65,6 +64,9 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
     @MainThread
     protected void onTaskFinished(Result result) {
 
+        // Cancel all work instance
+        cancelWork();
+
     }
 
     @SuppressWarnings({"UnusedDeclaration"})
@@ -77,7 +79,9 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
     public void cancelWork() {
 
         if (!exc.isShutdown()) {
+
             exc.shutdown();
+
         }
 
 
