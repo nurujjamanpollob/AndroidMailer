@@ -62,14 +62,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onEmailSent(String totoRecipientAddress) {
 
                     System.out.println("Sent");
-                    Looper.prepare();
                     Toast.makeText(MainActivity.this, "Mail sent to " + totoRecipientAddress, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onEmailSendFailed(String errorMessage) {
 
-                    Looper.prepare();
+
                     System.out.println(errorMessage);
                     Toast.makeText(MainActivity.this, "Mail send Exception " + errorMessage, Toast.LENGTH_SHORT).show();
                 }

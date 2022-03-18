@@ -41,6 +41,7 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
 
     private void postResult(Result result) {
         Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT, new NJPollobCustomAsyncTaskResult<>(this, result));
+        message.setTarget(new Handler(Looper.getMainLooper()));
         message.sendToTarget();
     }
 
@@ -127,8 +128,12 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
         NJPollobCustomAsyncTaskResult(@SuppressWarnings("rawtypes")NJPollobCustomAsyncTask task, Result result) {
 
             task.cancelWork();
+
+            // Call Looper Prepare
+            Looper.prepare();
             // Invoke task finish
             task.onTaskFinished(result);
+
         }
 
     }
