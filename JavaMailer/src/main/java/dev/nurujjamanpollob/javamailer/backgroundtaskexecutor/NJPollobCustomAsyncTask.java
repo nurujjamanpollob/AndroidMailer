@@ -133,10 +133,18 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
 
             task.cancelWork();
 
-            // Call Looper Prepare
-            Looper.prepare();
-            // Invoke task finish
-            task.onTaskFinished(result);
+            try {
+
+                // Invoke task finish
+                task.onTaskFinished(result);
+
+            }catch (Exception ignored){
+                // Call Looper Prepare
+                Looper.prepare();
+                // Invoke task finish
+                task.onTaskFinished(result);
+
+            }
 
         }
 
