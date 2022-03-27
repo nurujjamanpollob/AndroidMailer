@@ -3,6 +3,7 @@ package dev.nurujjamanpollob.javamailer.sender;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -10,7 +11,10 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import dev.nurujjamanpollob.javamailer.backgroundtaskexecutor.NJPollobCustomAsyncTask;
 
@@ -24,6 +28,10 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     private MessageSendListener listener;
     private final Provider serviceProviderConfiguration;
     private String errorMessage;
+    private boolean sendFileWithAttachment;
+    private byte[] fileByte;
+    private String attachmentName;
+    private String attachmentMimeType;
 
     public MailSendWrapper(String fromAddress, String toAddress, String password, String mailSubject, String mailMessage, Provider serviceProviderConfiguration) {
         this.fromAddress = fromAddress;
@@ -60,12 +68,38 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             MimeMessage message = new MimeMessage(session);
             message.addRecipient(Message.RecipientType.TO,new InternetAddress(toAddress));
             message.setFrom(fromAddress);
-            message.setSubject(mailSubject);
-            message.setText(mailMessage);
+            message.setSubject(mailSubject , "UTF8");
+            //message.setText(mailMessage);
+
+            // Create Mime MultiPart instance and attach message body
+            MimeMultipart mimeMultipart = new MimeMultipart();
+
+            // Create multipart body
+            MimeBodyPart messageBody = new MimeBodyPart();
+            messageBody.setDataHandler(new DataHandler(mailMessage, "text/html"));
+
+            // Attach to multipart
+            mimeMultipart.addBodyPart(messageBody);
+
+            // if flag indicates that we need to append file as attachment
+            // And byte array is not null
+            if (sendFileWithAttachment && fileByte != null){
+
+                // Create attachment part
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                // assign file byte
+                attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(fileByte, attachmentMimeType)));
+                // set file name
+                attachmentPart.setFileName(attachmentName);
+                // attach to multipart
+                mimeMultipart.addBodyPart(attachmentPart);
+
+            }
+
+            // attach Multipart to Mime Message
+            message.setContent(mimeMultipart);
             //send message
             Transport.send(message);
-
-
 
             return toAddress;
 
@@ -149,8 +183,25 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
      */
     public void doSendEmailToFollowingClient(){
 
+        sendFileWithAttachment = false;
         // Run background thread
         this.runThread();
+
+    }
+
+
+    public void sendEmailWithAttachment(byte[] fileByte, String attachmentName, String attachmentMimeType){
+
+        sendFileWithAttachment = true;
+
+        // Assign variable values
+        this.fileByte = fileByte;
+        this.attachmentName = attachmentName;
+        this.attachmentMimeType = attachmentMimeType;
+
+        // Run background thread
+        this.runThread();
+
 
     }
 
