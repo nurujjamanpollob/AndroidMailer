@@ -63,6 +63,13 @@
             android:background="@color/white"
             android:layout_height="wrap_content" />
 
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/pick_file"
+            android:src="@drawable/ic_baseline_attach_file_24" />
 
         <Button
             android:layout_width="wrap_content"

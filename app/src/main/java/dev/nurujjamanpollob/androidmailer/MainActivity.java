@@ -1,12 +1,19 @@
 package dev.nurujjamanpollob.androidmailer;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Provider;
 import dev.nurujjamanpollob.javamailer.sender.Providers;
@@ -18,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private final String MAIL_SENDER_SEND_FROM_ADDRESS = "founder@willtoeat.com";
     private final String MAIL_HOST = "mail.privateemail.com";
     private final String MAIL_PASSWORD = "$$0203040506$$";
+    private final int pickFileRequestCode = 11223344;
+    private Attachment attachment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Submit button Field
         Button submitButton = findViewById(R.id.email_submit_button);
+
+        // Pick icon field
+        ImageView pickAttachment = findViewById(R.id.pick_file);
+
+        pickAttachment.setOnClickListener(view -> pickFileFromSystem());
 
         // set click listener
         submitButton.setOnClickListener(view -> {
@@ -81,10 +95,67 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            // Get Application Icon
 
             // Fire mail sender to send to client
             mailSendWrapper.doSendEmailToFollowingClient();
+
         });
 
+    }
+
+
+    private void pickFileFromSystem(){
+
+        Intent fileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        fileChooserIntent.setType("*/*");
+        fileChooserIntent = Intent.createChooser(fileChooserIntent, "Choose Attachment");
+
+        // Start Chooser
+        startActivityForResult(fileChooserIntent, pickFileRequestCode);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == pickFileRequestCode){
+            if(resultCode == RESULT_OK){
+
+                // get content URI
+                Uri contentUri = data != null ? data.getData() : null;
+
+                AndroidUriToAttachmentUtility attachmentUtility = new AndroidUriToAttachmentUtility(contentUri, MainActivity.this);
+                System.out.println("File Byte Len: " + attachmentUtility.getFileByte().length);
+                System.out.println("File name is: " + attachmentUtility.getFileName());
+                System.out.println("File Mime type: " + attachmentUtility.getMimeType());
+
+
+            }else {
+                attachment = null;
+            }
+        }
+    }
+
+
+
+    public String getPath(Uri uri) {
+
+        String path = null;
+        String[] projection = { MediaStore.Files.FileColumns.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+
+        if(cursor == null){
+            path = uri.getPath();
+        }
+        else{
+            cursor.moveToFirst();
+            int column_index = cursor.getColumnIndexOrThrow(projection[0]);
+            path = cursor.getString(column_index);
+            cursor.close();
+        }
+
+        return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
     }
 }
