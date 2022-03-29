@@ -1,6 +1,11 @@
 package dev.nurujjamanpollob.javamailer.sender;
 
 
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+
+import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -17,7 +22,15 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import dev.nurujjamanpollob.javamailer.backgroundtaskexecutor.NJPollobCustomAsyncTask;
+import dev.nurujjamanpollob.javamailer.entity.Attachment;
 
+/**
+ * This class is designed to simplify mail sending experience in Android Application
+ * It launches a background thread to send Email background.
+ * If you do update application UI from Background thread,
+ * Be sure to use: YourActivity.this.runOnUiThread(Runnable task); To update application UI,
+ * it is highly recommended.
+ */
 public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
 
     private final String fromAddress;
@@ -29,11 +42,35 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     private final Provider serviceProviderConfiguration;
     private String errorMessage;
     private boolean sendFileWithAttachment;
-    private byte[] fileByte;
-    private String attachmentName;
-    private String attachmentMimeType;
+    private Attachment[] attachments;
 
-    public MailSendWrapper(String fromAddress, String toAddress, String password, String mailSubject, String mailMessage, Provider serviceProviderConfiguration) {
+    /**
+     * Constructor Parameter to Configure MailSendWrapper with basic parameters
+     * @param fromAddress set the email from address field,
+     *                    for example if you are sending email by nurujjamanpollob@androiddev.io,
+     *                    you should pass this value as argument.
+     * @param toAddress set the target address, the recipient address.
+     * @param password the SMTP host or POP3 host account password
+     * @param mailSubject set the email subject.
+     * @param mailMessage sets the email body message.
+     * @param serviceProviderConfiguration argument for Provider class, that contains SMTP or POP3 server configuration to send the email.
+     *                                     For more information,
+     * @see Provider class for more information
+     */
+    public MailSendWrapper(
+            @NonNull
+            String fromAddress,
+            @NonNull
+            String toAddress,
+            @NonNull
+            String password,
+            @NonNull
+            String mailSubject,
+            @NonNull
+            String mailMessage,
+            @NonNull
+            Provider serviceProviderConfiguration
+    ) {
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.password = password;
@@ -42,6 +79,10 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         this.serviceProviderConfiguration = serviceProviderConfiguration;
     }
 
+    /**
+     * This method executes when a background thread is starting
+     */
+    @MainThread
     @Override
     protected void preExecute() {
         super.preExecute();
@@ -52,7 +93,10 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         }
     }
 
-    // Method to send email with Provider Data
+    /**
+     * Method to send email with passed parameters, from background thread
+      */
+    @WorkerThread
     private String sendEmailToClient() {
 
         //get Session
@@ -69,7 +113,6 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             message.addRecipient(Message.RecipientType.TO,new InternetAddress(toAddress));
             message.setFrom(fromAddress);
             message.setSubject(mailSubject , "UTF8");
-            //message.setText(mailMessage);
 
             // Create Mime MultiPart instance and attach message body
             MimeMultipart mimeMultipart = new MimeMultipart();
@@ -82,17 +125,20 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             mimeMultipart.addBodyPart(messageBody);
 
             // if flag indicates that we need to append file as attachment
-            // And byte array is not null
-            if (sendFileWithAttachment && fileByte != null){
+            // And Attachment array is not null
+            if (sendFileWithAttachment && attachments != null && attachments.length > 0){
 
-                // Create attachment part
-                MimeBodyPart attachmentPart = new MimeBodyPart();
-                // assign file byte
-                attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(fileByte, attachmentMimeType)));
-                // set file name
-                attachmentPart.setFileName(attachmentName);
-                // attach to multipart
-                mimeMultipart.addBodyPart(attachmentPart);
+                // Lets iterate over The array and add every attachment to the Mime Multi Part
+                for(Attachment attachment : attachments){
+                    // Create attachment part
+                    MimeBodyPart attachmentPart = new MimeBodyPart();
+                    // assign file byte with mime type
+                    attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(attachment.getAttachmentByte(), attachment.getAttachmentMimeType())));
+                    // Set attachment file name
+                    attachmentPart.setFileName(attachment.getAttachmentName());
+                    // attach to multipart
+                    mimeMultipart.addBodyPart(attachmentPart);
+                }
 
             }
 
@@ -104,9 +150,13 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             return toAddress;
 
 
-        }catch (MessagingException messagingException){
-
+        }
+        // Email send exception
+        catch (MessagingException messagingException){
+            // Get error message and update to variable
             this.errorMessage = messagingException.getMessage();
+
+            // Return null means there is error
             return null;
         }
 
@@ -122,25 +172,59 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
 
         //Get properties object
         Properties props = new Properties();
-        props.put("mail.smtp.host", provider.getMailSMTPHostAddress());
-        props.put("mail.smtp.socketFactory.port", provider.getSocketFactoryPortAddress());
-        props.put("mail.smtp.socketFactory.class", provider.getSocketFactoryClassName());
-        props.put("mail.smtp.auth", provider.getUseAuth());
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.starttls.required", "true");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        props.put("mail.smtp.port", provider.getMailSMTPPortAddress());
+        // lets iterate over the Provider.getAllConfigurations and add to props
+        for(Map.Entry<String, String> configSet : provider.getAllConfigurations().entrySet()){
+
+            props.put(configSet.getKey(), configSet.getValue());
+
+        }
+
+        /* For improvement of security, using TLS is requires
+         If the basic configuration for TLS is not found on Provider.getAllConfigurations
+         This library will add some TLS based configs, anyway this can be disabled by passing Provider(Boolean isUseTLS) false
+         By default, it is false
+         */
+        if (provider.getIsUseTLS()){
+
+            // Lets check for TLS configuration
+            // If the some parameter is missing, add missing configuration for working TLS
+            String tlsEnable = "mail.smtp.starttls.enable";
+            String tlsRequires = "mail.smtp.starttls.required";
+            String tlsSSLProtocols = "mail.smtp.ssl.protocols";
+
+            if(provider.getValueForAConfiguration(tlsEnable) == null){
+                props.put(tlsEnable, "true");
+            }
+            if (provider.getValueForAConfiguration(tlsRequires) == null){
+                props.put(tlsRequires, "true");
+            }
+
+            if(provider.getValueForAConfiguration(tlsSSLProtocols) == null){
+                props.put(tlsSSLProtocols, "TLSv1.2");
+            }
+        }
+
 
         return props;
 
     }
 
+    /**
+     * This method executes in the background thread
+     * @return null if the email send to client is unsuccessful, else the recipient address is returned.
+     */
+    @WorkerThread
     @Override
     protected String doBackgroundTask() {
        return sendEmailToClient();
 
     }
 
+    /**
+     * This method executed when background thread finishes background task
+     * @param output the output from background thread
+     */
+    @MainThread
     @Override
     protected void onTaskFinished(String output) {
         super.onTaskFinished(output);
@@ -157,13 +241,28 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         }
 
 
-
     }
 
+    /**
+     * Listener interface to listen on MailSendWrapper Event and provide different callbacks
+     */
     public interface MessageSendListener{
 
+        /**
+         * This method will be invoked when the email sending task starts
+         */
         default void whileSendingEmail(){}
-        default void onEmailSent(String totoRecipientAddress){}
+
+        /**
+         * This method will be invoked when a email to recipient address is successfully delivered
+         * @param toRecipientAddress the String containing recipient email address
+         */
+        default void onEmailSent(String toRecipientAddress){}
+
+        /**
+         * This method will be invoked when the email sending process has been failed.
+         * @param errorMessage the String containing error description
+         */
         default void onEmailSendFailed(String errorMessage){}
 
 
@@ -190,20 +289,31 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     }
 
 
-    public void sendEmailWithAttachment(byte[] fileByte, String attachmentName, String attachmentMimeType){
-
+    /**
+     * Method to send a email to recipient email address with Multiple Attachment
+     */
+    public void sendEmailWithAttachment(Attachment[] attachments){
         sendFileWithAttachment = true;
-
         // Assign variable values
-        this.fileByte = fileByte;
-        this.attachmentName = attachmentName;
-        this.attachmentMimeType = attachmentMimeType;
-
+        this.attachments = attachments;
         // Run background thread
         this.runThread();
 
 
     }
+
+    /**
+     * Method to send a email to recipient email address with a Single Attachment
+     */
+    public void setSendFileWithAttachment(Attachment attachment){
+
+        sendFileWithAttachment = true;
+        this.attachments = new Attachment[1];
+        attachments[0] = attachment;
+        // Run background thread
+        this.runThread();
+    }
+
 
 
 

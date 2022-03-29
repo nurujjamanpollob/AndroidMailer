@@ -1,23 +1,23 @@
 package dev.nurujjamanpollob.androidmailer;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.os.Looper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Provider;
 import dev.nurujjamanpollob.javamailer.sender.Providers;
-import dev.nurujjamanpollob.javamailer.sender.Vars;
-
-
 
 
 public class MainActivity extends AppCompatActivity {
+
+
+    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "founder@willtoeat.com";
+    private final String MAIL_HOST = "mail.privateemail.com";
+    private final String MAIL_PASSWORD = "$$0203040506$$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +38,19 @@ public class MainActivity extends AppCompatActivity {
             String message = emailTextContentField.getText().toString();
 
             // Create service provider configuration
-            Provider serviceProviderConfig = new Provider(Vars.MAIL_HOST, "465", "465", Providers.getSecureSocketFactoryName(), true);
+            Provider serviceProviderConfig = new Provider(
+                    MAIL_HOST,
+                    "465",
+                    "465",
+                    Providers.getSecureSocketFactoryName(),
+                    true,
+                    true);
+
             // send email to server
             MailSendWrapper mailSendWrapper = new MailSendWrapper(
-                    Vars.MAIL_SENDER_SEND_FROM_ADDRESS,
+                    MAIL_SENDER_SEND_FROM_ADDRESS,
                     receiverMailAdd,
-                    Vars.MAIL_PASSWORD,
+                    MAIL_PASSWORD,
                     subject,
                     message,
                     serviceProviderConfig);
