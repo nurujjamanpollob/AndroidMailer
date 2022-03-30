@@ -6,3 +6,6 @@ This project is mainly use <b>javax.mail</b> and <b>javax.activation</b> package
 
 Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to utilize effiecient background work processing.
 
+
+Currently, I am working... I will update this documentation after 2-3 hours. stay tuned.
+
