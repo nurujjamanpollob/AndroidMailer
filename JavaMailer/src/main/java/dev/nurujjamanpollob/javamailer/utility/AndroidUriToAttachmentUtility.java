@@ -1,4 +1,4 @@
-package dev.nurujjamanpollob.androidmailer;
+package dev.nurujjamanpollob.javamailer.utility;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -9,6 +9,8 @@ import android.webkit.MimeTypeMap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import dev.nurujjamanpollob.javamailer.entity.Attachment;
 
 public class AndroidUriToAttachmentUtility {
 
@@ -72,7 +74,7 @@ public class AndroidUriToAttachmentUtility {
     }
 
     public String getMimeType() {
-        String mimeType = null;
+        String mimeType;
         if (ContentResolver.SCHEME_CONTENT.equals(fileUri.getScheme())) {
             ContentResolver cr = activity.getContentResolver();
             mimeType = cr.getType(fileUri);
@@ -82,6 +84,11 @@ public class AndroidUriToAttachmentUtility {
                     fileExtension.toLowerCase());
         }
         return mimeType;
+    }
+
+    public Attachment getAttachmentInstance(){
+
+        return new Attachment(getFileByte(), getFileName(), getMimeType());
     }
 
 }

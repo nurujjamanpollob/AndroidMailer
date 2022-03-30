@@ -17,6 +17,7 @@ import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Provider;
 import dev.nurujjamanpollob.javamailer.sender.Providers;
+import dev.nurujjamanpollob.javamailer.utility.AndroidUriToAttachmentUtility;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -98,7 +99,14 @@ public class MainActivity extends AppCompatActivity {
             // Get Application Icon
 
             // Fire mail sender to send to client
-            mailSendWrapper.doSendEmailToFollowingClient();
+            // When attachment is not null
+            if(attachment != null && attachment.isAttachmentNotNull()){
+                mailSendWrapper.setSendFileWithAttachment(attachment);
+            }
+            // When attachment is null
+            else {
+                mailSendWrapper.doSendEmailToFollowingClient();
+            }
 
         });
 
@@ -125,12 +133,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // get content URI
                 Uri contentUri = data != null ? data.getData() : null;
-
-                AndroidUriToAttachmentUtility attachmentUtility = new AndroidUriToAttachmentUtility(contentUri, MainActivity.this);
-                System.out.println("File Byte Len: " + attachmentUtility.getFileByte().length);
-                System.out.println("File name is: " + attachmentUtility.getFileName());
-                System.out.println("File Mime type: " + attachmentUtility.getMimeType());
-
+                // Get attachment from URI
+                attachment = new AndroidUriToAttachmentUtility(contentUri, MainActivity.this).getAttachmentInstance();
 
             }else {
                 attachment = null;
@@ -138,24 +142,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-    public String getPath(Uri uri) {
-
-        String path = null;
-        String[] projection = { MediaStore.Files.FileColumns.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-
-        if(cursor == null){
-            path = uri.getPath();
-        }
-        else{
-            cursor.moveToFirst();
-            int column_index = cursor.getColumnIndexOrThrow(projection[0]);
-            path = cursor.getString(column_index);
-            cursor.close();
-        }
-
-        return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
-    }
 }
