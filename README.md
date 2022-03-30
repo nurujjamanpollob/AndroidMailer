@@ -272,6 +272,4 @@ For your quick jump, click here to see the sample activity file that implemented
 
 ## Interactive Demo
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/interactive-demo.mov?raw=true" type="video/mp4">
-</video>
+https://raw.githubusercontent.com/nurujjamanpollob/AndroidMailer/master/interactive-demo.mov
