@@ -19,6 +19,10 @@ public class Providers {
         return new Provider(gmailHostName,gmailSmtpPort,socketFactoryPort,socketFactoryClassName, true);
     }
 
+    /**
+     * Method to get a well used SecureSocketFactory anme
+     * @return a String containing javax.net.ssl.SSLSocketFactory
+     */
     public static String getSecureSocketFactoryName(){
 
         return "javax.net.ssl.SSLSocketFactory";

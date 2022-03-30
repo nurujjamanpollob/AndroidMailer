@@ -150,12 +150,6 @@ public abstract class NJPollobCustomAsyncTask<Progress, Result> {
 
     }
 
-
-
-
-
-
-
     public void setTaskFinishedEventListener(OnAsyncTaskFinishedListener finishedListener){
 
 

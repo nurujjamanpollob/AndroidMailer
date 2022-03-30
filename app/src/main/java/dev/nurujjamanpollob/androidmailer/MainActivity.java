@@ -23,11 +23,15 @@ import dev.nurujjamanpollob.javamailer.utility.AndroidUriToAttachmentUtility;
 public class MainActivity extends AppCompatActivity {
 
 
-    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "founder@willtoeat.com";
-    private final String MAIL_HOST = "mail.privateemail.com";
-    private final String MAIL_PASSWORD = "$$0203040506$$";
+    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "fromaddress@domain.com";
+    private final String MAIL_HOST = "mail.domain.com";
+    private final String MAIL_PASSWORD = "mailbosspasswordhere";
     private final int pickFileRequestCode = 11223344;
+    private final String smtpPortAddress = "465";
+    private final String socketFactoryPortAddress = "465";
     private Attachment attachment;
+    private final Boolean isUseAuth = true;
+    private final Boolean isUseTls = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +59,23 @@ public class MainActivity extends AppCompatActivity {
             // Create service provider configuration
             Provider serviceProviderConfig = new Provider(
                     MAIL_HOST,
-                    "465",
-                    "465",
+                    smtpPortAddress,
+                    socketFactoryPortAddress,
                     Providers.getSecureSocketFactoryName(),
-                    true,
-                    true);
+                    isUseAuth,
+                    isUseTls);
 
-            // send email to server
+
+
+            /*
+            Basic mail credentials is provided, if you need to provide additional mail properties,
+            use: serviceProviderConfig.putConfiguration(String propertyKey, String propertyValue);
+            This can also be used to Override current mail service configuration
+             */
+
+
+
+            // send email to server using wrapper
             MailSendWrapper mailSendWrapper = new MailSendWrapper(
                     MAIL_SENDER_SEND_FROM_ADDRESS,
                     receiverMailAdd,
@@ -75,31 +89,29 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void whileSendingEmail() {
 
-
-                    System.out.println("Sending...");
                     Toast.makeText(MainActivity.this, "Sending Mail...", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onEmailSent(String totoRecipientAddress) {
-
-                    System.out.println("Sent");
+                    // reset attachment
+                    attachment = null;
                     Toast.makeText(MainActivity.this, "Mail sent to " + totoRecipientAddress, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onEmailSendFailed(String errorMessage) {
-
-
-                    System.out.println(errorMessage);
+                    // reset attachment
+                    attachment = null;
                     Toast.makeText(MainActivity.this, "Mail send Exception " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
             });
 
-            // Get Application Icon
+
 
             // Fire mail sender to send to client
             // When attachment is not null
+            // Call mailSendWrapper.setSendFileWithAttachment(attachment);
             if(attachment != null && attachment.isAttachmentNotNull()){
                 mailSendWrapper.setSendFileWithAttachment(attachment);
             }
@@ -113,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method to pick file from system
+     */
     private void pickFileFromSystem(){
 
         Intent fileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
