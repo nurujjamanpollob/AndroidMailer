@@ -271,3 +271,9 @@ For your quick jump, click here to see the sample activity file that implemented
 
 
 ## Interactive Demo
+
+https://raw.githubusercontent.com/nurujjamanpollob/AndroidMailer/master/interactive-demo.mov
+
+## Documentation
+
+Will be covered in my free time. Anyway, some of documentation available inside project files. Feel free to check it.
