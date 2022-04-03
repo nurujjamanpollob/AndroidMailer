@@ -49,18 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         pickAttachment.setOnClickListener(view -> pickFileFromSystem());
 
-        try {
-            MailWrapperSecure secure = new MailWrapperSecure(MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
-                    "receiverMailAdd", // receiver mail address
-                    MAIL_PASSWORD, // mailbox password
-                    "subject",
-                    "message",
-                    null);
-
-            System.out.println("Test get encoded password: " +secure.getPassword());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // set click listener
         submitButton.setOnClickListener(view -> {

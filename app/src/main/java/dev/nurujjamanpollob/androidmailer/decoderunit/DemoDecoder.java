@@ -44,6 +44,6 @@ public class DemoDecoder extends SecurityPlugin {
             // Use default flag to decode from android.util.Base64
             byte[] stringBytes = Base64.decode(encodedPassword, Base64.DEFAULT);
             // return decoded String
-            return "Decoding logic flow";
+            return new String(stringBytes);
     }
 }

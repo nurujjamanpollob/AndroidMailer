@@ -344,8 +344,4 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         this.runThread();
     }
 
-
-    public String getPassword() {
-        return password;
-    }
 }
