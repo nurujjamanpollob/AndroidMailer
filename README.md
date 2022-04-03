@@ -51,7 +51,7 @@ After that, you should add following code in your app module's <b>build.gradle</
 <pre>
 <code> 	
 dependencies {
-	implementation 'com.github.nurujjamanpollob:AndroidMailer:1.0'
+	implementation 'com.github.nurujjamanpollob:AndroidMailer:2.0'
 }
 </code>
 </pre>
@@ -391,11 +391,49 @@ public class MailWrapperSecure extends MailSendWrapper {
 In this example, I have used only <b>decoder</b> in password field only, anyway, you are free to use <b>@DecodeWith</b> in <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/decoderunit/DemoDecoder.java">DemoDecoder.java</a> class, and it's all String parameter has been supported.
 
 
-Note: @DecodeWith only works with <b>MailSendWrapper</b> class and it's all String parameter. other scope will be covered in <b>2.1</b> release.
+Note: <b>@DecodeWith</b> only works with <b>MailSendWrapper</b> class and it's all String parameter. other scope will be covered in <b>2.1</b> release.
 
 	
-For now, I never added any <b>encrypt/decrypt library</b>, in future release, I have a plan to add some <b>encrypt/decrypt library</b>
+For now, I never added any <b>encryption/decryption library</b>. Please use your preferred library to get support.
 
+## @DecodeWith Coverage
+
+<table> 
+	
+<tr>
+<th> <h4> Class <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/MailSendWrapper.java">MailSendWrapper</a></th>
+<th> public MailSendWrapper(@NonNull String fromAddress, @NonNull String toAddress, @NonNull String password, @NonNull String mailSubject, @NonNull String mailMessage, @NonNull Provider serviceProviderConfiguration) throws Exception</th>	
+</tr>
+	
+<tr>
+<td> String fromAddress </td>
+<td> ☑️ </td>
+</tr>
+
+<tr>
+<td> String toAddress </td>
+<td> ☑️ </td>
+</tr>
+<tr>
+<td> String password </td>
+<td> ☑️ </td>
+</tr>
+<tr>
+<td> mailSubject </td>
+<td> ☑️ </td>
+</tr>
+	
+<tr>
+<td> mailMessage </td>
+<td> ☑ </td>
+</tr>
+	
+<tr>
+<td> serviceProviderConfiguration </td>
+<td> ❌ </td>
+</tr>
+
+</table>
 
 ## Documentation
 
