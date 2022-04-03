@@ -1,10 +1,8 @@
 package dev.nurujjamanpollob.androidmailer;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import dev.nurujjamanpollob.androidmailer.overrides.MailWrapperSecure;
 import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Provider;
@@ -50,6 +49,19 @@ public class MainActivity extends AppCompatActivity {
 
         pickAttachment.setOnClickListener(view -> pickFileFromSystem());
 
+        try {
+            MailWrapperSecure secure = new MailWrapperSecure(MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
+                    "receiverMailAdd", // receiver mail address
+                    MAIL_PASSWORD, // mailbox password
+                    "subject",
+                    "message",
+                    null);
+
+            System.out.println("Test get encoded password: " +secure.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // set click listener
         submitButton.setOnClickListener(view -> {
             String receiverMailAdd = receiveMailField.getText().toString();
@@ -79,19 +91,18 @@ public class MainActivity extends AppCompatActivity {
             MailSendWrapper mailSendWrapper = null;
             try {
                 mailSendWrapper = new MailSendWrapper(
-                        MAIL_SENDER_SEND_FROM_ADDRESS,
-                        receiverMailAdd,
-                        MAIL_PASSWORD,
-                        subject,
-                        message,
-                        serviceProviderConfig);
+                            MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
+                            receiverMailAdd, // receiver mail address
+                            MAIL_PASSWORD, // mailbox password
+                            subject,
+                            message,
+                            serviceProviderConfig);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            // If wrapper is not null.
-            assert mailSendWrapper != null;
             // Listen to event
+            assert mailSendWrapper != null;
             mailSendWrapper.setMailSendEventListener(new MailSendWrapper.MessageSendListener() {
                 @Override
                 public void whileSendingEmail() {
