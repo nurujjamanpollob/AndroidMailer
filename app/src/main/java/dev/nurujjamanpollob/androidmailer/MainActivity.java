@@ -76,14 +76,21 @@ public class MainActivity extends AppCompatActivity {
 
 
             // send email to server using wrapper
-            MailSendWrapper mailSendWrapper = new MailSendWrapper(
-                    MAIL_SENDER_SEND_FROM_ADDRESS,
-                    receiverMailAdd,
-                    MAIL_PASSWORD,
-                    subject,
-                    message,
-                    serviceProviderConfig);
+            MailSendWrapper mailSendWrapper = null;
+            try {
+                mailSendWrapper = new MailSendWrapper(
+                        MAIL_SENDER_SEND_FROM_ADDRESS,
+                        receiverMailAdd,
+                        MAIL_PASSWORD,
+                        subject,
+                        message,
+                        serviceProviderConfig);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+            // If wrapper is not null.
+            assert mailSendWrapper != null;
             // Listen to event
             mailSendWrapper.setMailSendEventListener(new MailSendWrapper.MessageSendListener() {
                 @Override

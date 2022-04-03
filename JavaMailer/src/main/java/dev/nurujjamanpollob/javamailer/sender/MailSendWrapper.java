@@ -23,6 +23,10 @@ import javax.mail.util.ByteArrayDataSource;
 
 import dev.nurujjamanpollob.javamailer.backgroundtaskexecutor.NJPollobCustomAsyncTask;
 import dev.nurujjamanpollob.javamailer.entity.Attachment;
+import dev.nurujjamanpollob.javamailer.security.SecurityDriver;
+import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
+import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
+import dev.nurujjamanpollob.javamailer.security.utility.SecurityPluginUtility;
 
 /**
  * This class is designed to simplify mail sending experience in Android Application
@@ -45,7 +49,8 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     private Attachment[] attachments;
 
     /**
-     * Constructor Parameter to Configure MailSendWrapper with basic parameters
+     * Constructor Parameter to Configure MailSendWrapper with basic parameters.
+     * Supports decoding support of all String parameters that annotated with @DecodeWith
      * @param fromAddress set the email from address field,
      *                    for example if you are sending email by nurujjamanpollob@androiddev.io,
      *                    you should pass this value as argument.
@@ -70,13 +75,38 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             String mailMessage,
             @NonNull
             Provider serviceProviderConfiguration
-    ) {
-        this.fromAddress = fromAddress;
-        this.toAddress = toAddress;
-        this.password = password;
-        this.mailSubject = mailSubject;
-        this.mailMessage = mailMessage;
+    ) throws Exception {
+
+        this.fromAddress = checkIfAnnotatedForDecoding(0,fromAddress, 0);
+        this.toAddress = checkIfAnnotatedForDecoding(0, toAddress, 1);
+        this.password = checkIfAnnotatedForDecoding(0, password, 2);
+        this.mailSubject = checkIfAnnotatedForDecoding(0, mailSubject, 3);
+        this.mailMessage = checkIfAnnotatedForDecoding(0, mailMessage, 4);
         this.serviceProviderConfiguration = serviceProviderConfiguration;
+    }
+
+    /**
+     * Method to check if a passed constructor parameter at given index has been annotated with @DecodeWith(decoder = Class<? extends SecurityPlugin>)
+     * If annotated, decode the encoded String at initialization time, and initialize the decoded String.
+     * @param inputString the passed String from parameter
+     * @param parameterIndex parameter index to check
+     * @return decoded String if the parameter is annotated with @DecodeWith
+     * @throws Exception if there are constructor index,
+     * parameter index, Security driver SecurityPlugin class has no correct number of parameter, or decoding method invocation failed.
+     */
+    @SuppressWarnings({"unchecked"})
+    private String checkIfAnnotatedForDecoding(int constructorIndex, String inputString, int parameterIndex) throws Exception {
+
+        SecurityPluginUtility securityPluginUtility = new SecurityPluginUtility(constructorIndex, super.getClass(), parameterIndex, DecodeWith.class);
+
+        if(securityPluginUtility.isConstructorParameterIsAnnotatedWithAnnotationClass()){
+
+            Class<? extends SecurityPlugin> securityPluginClass = (Class<? extends SecurityPlugin>) securityPluginUtility.getDecoderClassForSecurityDriver();
+
+            return new SecurityDriver(inputString, securityPluginClass).getDecodedPasscode();
+        }
+
+        return inputString;
     }
 
     /**
