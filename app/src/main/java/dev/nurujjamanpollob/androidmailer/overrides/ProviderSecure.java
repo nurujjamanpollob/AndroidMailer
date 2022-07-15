@@ -83,7 +83,7 @@ public class ProviderSecure extends Provider {
             @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
             @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
             @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
-            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth) {
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth) throws Exception{
 
         super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth);
     }
@@ -94,7 +94,7 @@ public class ProviderSecure extends Provider {
             @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
             @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
             @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth,
-            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseTLS) {
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseTLS) throws Exception{
         super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth, isUseTLS);
     }
 }

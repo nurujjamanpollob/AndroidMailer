@@ -126,7 +126,11 @@ public class EncryptedActivityExample extends Activity {
             String message = emailTextContentField.getText().toString();
 
             // Call sendMail method to send email
-            sendEmailUsingJavaMailer(receiverMailAdd, subject, message);
+            try {
+                sendEmailUsingJavaMailer(receiverMailAdd, subject, message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         });
 
@@ -143,7 +147,7 @@ public class EncryptedActivityExample extends Activity {
      * @param subject         the email subject
      * @param message         the email message, HTML Markup is allowed
      */
-    private void sendEmailUsingJavaMailer(String receiverMailAdd, String subject, String message) {
+    private void sendEmailUsingJavaMailer(String receiverMailAdd, String subject, String message) throws Exception {
 
 
         // Create service provider configuration
@@ -155,30 +159,27 @@ public class EncryptedActivityExample extends Activity {
                 isUseAuth,
                 isUseTls);
 
+        // Print service provider configuration
+        printProviderConfigs(serviceProviderConfig);
+
             /*
             Basic mail credentials is provided, if you need to provide additional mail properties,
             use: serviceProviderConfig.putConfiguration(String propertyKey, String propertyValue);
             This can also be used to Override current mail service configuration
              */
-
         // send email to server using wrapper
-        MailWrapperSecure mailSendWrapper = null;
-        try {
-            mailSendWrapper = new MailWrapperSecure(
-                    MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
-                    receiverMailAdd, // receiver mail address
-                    MAIL_PASSWORD, // mailbox password
-                    subject,
-                    message,
-                    serviceProviderConfig);
+        MailWrapperSecure mailSendWrapper = new MailWrapperSecure(
+                MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
+                receiverMailAdd, // receiver mail address
+                MAIL_PASSWORD, // mailbox password
+                subject,
+                message,
+                serviceProviderConfig);
 
-        } catch (Exception e) {
-            attachment = null;
-            Toast.makeText(EncryptedActivityExample.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        // Print Wrapper configuration
+        printMailWrapperConfigs(mailSendWrapper);
 
-        // Listen to event
-        assert mailSendWrapper != null;
+        // Set Listener for mail send event
         mailSendWrapper.setMailSendEventListener(new MailSendWrapper.MessageSendListener() {
             @Override
             public void whileSendingEmail() {
@@ -200,6 +201,7 @@ public class EncryptedActivityExample extends Activity {
                 Toast.makeText(EncryptedActivityExample.this, "Mail send Exception " + errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
 
         // Fire mail sender to send to client
         // When attachment is not null
@@ -250,5 +252,22 @@ public class EncryptedActivityExample extends Activity {
     private void launchGeneralActivity() {
         Intent intent = new Intent(EncryptedActivityExample.this, MainActivity.class);
         startActivity(intent);
+    }
+
+
+    /**
+     * Print Mail Wrapper Secure configs - Remove if necessary
+     */
+    private void printMailWrapperConfigs(MailWrapperSecure wrapper) {
+
+        System.out.println("Mail Send Wrapper configs are: " + wrapper);
+    }
+
+    /**
+     * Print Service Provider configs - Remove if necessary
+     */
+    private void printProviderConfigs(ProviderSecure provider) {
+
+        System.out.println("Provider configs are: " + provider);
     }
 }

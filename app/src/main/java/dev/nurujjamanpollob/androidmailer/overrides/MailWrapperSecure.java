@@ -61,6 +61,7 @@ package dev.nurujjamanpollob.androidmailer.overrides;
 
 import androidx.annotation.NonNull;
 
+
 import dev.nurujjamanpollob.androidmailer.decoderunit.DemoDecoder;
 import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
@@ -98,4 +99,6 @@ public class MailWrapperSecure extends MailSendWrapper {
     ) throws Exception {
         super(fromAddress, toAddress, password, mailSubject, mailMessage, serviceProviderConfiguration);
     }
+
+
 }

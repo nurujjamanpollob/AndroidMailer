@@ -120,7 +120,11 @@ public class MainActivity extends AppCompatActivity {
             String message = emailTextContentField.getText().toString();
 
             // Call sendMail method to send email
-            sendEmailUsingJavaMailer(receiverMailAdd, subject, message);
+            try {
+                sendEmailUsingJavaMailer(receiverMailAdd, subject, message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         });
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method to send email using JavaMailer
      */
-    private void sendEmailUsingJavaMailer(String receiverMailAdd, String subject, String message) {
+    private void sendEmailUsingJavaMailer(String receiverMailAdd, String subject, String message) throws Exception {
 
 
         // Create service provider configuration
@@ -175,29 +179,28 @@ public class MainActivity extends AppCompatActivity {
                 isUseAuth,
                 isUseTls);
 
+        // print service provider configuration
+        printProviderConfigs(serviceProviderConfig);
+
             /*
             Basic mail credentials is provided, if you need to provide additional mail properties,
             use: serviceProviderConfig.putConfiguration(String propertyKey, String propertyValue);
             This can also be used to Override current mail service configuration
              */
 
-        // send email to server using wrapper
-        MailSendWrapper mailSendWrapper = null;
-        try {
-            mailSendWrapper = new MailSendWrapper(
+        // send email to server using wrapper class
+        MailSendWrapper   mailSendWrapper = new MailSendWrapper(
                     MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
                     receiverMailAdd, // receiver mail address
                     MAIL_PASSWORD, // mailbox password
                     subject,
                     message,
                     serviceProviderConfig);
-        } catch (Exception e) {
-            attachment = null;
-            Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
 
-        // Listen to event
-        assert mailSendWrapper != null;
+        // Print mail wrapper configuration
+        printMailWrapperConfigs(mailSendWrapper);
+
+        // Set event listener for mail send event
         mailSendWrapper.setMailSendEventListener(new MailSendWrapper.MessageSendListener() {
             @Override
             public void whileSendingEmail() {
@@ -239,9 +242,25 @@ public class MainActivity extends AppCompatActivity {
      */
     private void launchNewIntent(){
 
-        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        Intent intent = new Intent(MainActivity.this, EncryptedActivityExample.class);
         startActivity(intent);
 
+    }
+
+    /**
+     * Print Mail Wrapper configs - Remove if necessary
+     */
+    private void printMailWrapperConfigs(MailSendWrapper wrapper) {
+
+        System.out.println("Mail Send Wrapper configs are: " + wrapper);
+    }
+
+    /**
+     * Print Service Provider configs - Remove if necessary
+     */
+    private void printProviderConfigs(Provider provider) {
+
+        System.out.println("Provider configs are: " + provider);
     }
 
 

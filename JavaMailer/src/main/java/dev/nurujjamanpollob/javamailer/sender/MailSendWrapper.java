@@ -260,12 +260,8 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
 
         //Get properties object
         Properties props = new Properties();
-        // lets iterate over the Provider.getAllConfigurations and add to props
-        for(Map.Entry<String, String> configSet : provider.getAllConfigurations().entrySet()){
-
-            props.put(configSet.getKey(), configSet.getValue());
-
-        }
+        // put all the properties from provider to properties object
+        props.putAll(provider.getAllConfigurations());
 
         /* For improvement of security, using TLS is requires
          If the basic configuration for TLS is not found on Provider.getAllConfigurations
@@ -402,6 +398,11 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         this.runThread();
     }
 
+    /**
+     * Override ToString method to print the class details
+     * @return String containing class details
+     */
+
     @NonNull
     @Override
     public String toString() {
@@ -421,19 +422,5 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
 
 
 
-    public String getAllPassedParameters(){
 
-        return "MailSendWrapper{" +
-                "fromAddress='" + fromAddress + '\'' +
-                ", toAddress='" + toAddress + '\'' +
-                ", password='" + password + '\'' +
-                ", mailSubject='" + mailSubject + '\'' +
-                ", mailMessage='" + mailMessage + '\'' +
-                ", listener=" + listener +
-                ", serviceProviderConfiguration=" + serviceProviderConfiguration +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", sendFileWithAttachment=" + sendFileWithAttachment +
-                ", attachments=" + Arrays.toString(attachments) +
-                '}';
-    }
 }
