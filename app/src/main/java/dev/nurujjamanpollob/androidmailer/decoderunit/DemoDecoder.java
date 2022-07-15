@@ -4,7 +4,6 @@ package dev.nurujjamanpollob.androidmailer.decoderunit;
 import android.util.Base64;
 
 import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
-import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
 
 /**
  * Class to demonstrate The String decoding strategy,
@@ -13,14 +12,14 @@ import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
  * Highly customizable security plugin support for AndroidMailer library.
  * In this example, I gonna use android.util.Base64 to decode encoded String.
  * You can use any logic flow, and a guaranteed execution is confirmed.
- * Override getDecodedPassword() to implement decoding logic flow.
+ * Override {@link SecurityPlugin#getDecodedPassword()} to implement decoding logic flow.
  */
 public class DemoDecoder extends SecurityPlugin {
 
    private final String encodedPassword;
 
     /**
-     * Constructor Parameter to accept encoded String
+     * Parameter to accept encoded String
      * @param encodedPass the encoded String.
      */
     public DemoDecoder(String encodedPass) {
@@ -33,10 +32,10 @@ public class DemoDecoder extends SecurityPlugin {
 
     /**
      * TODO: Developer Implementation part
-     * Override this method to customize the default implementation of super.getDecodedPassword()
+     * Override this method to customize the default implementation of {@link SecurityPlugin#getDecodedPassword()}
      * By default, it usages java.util.Base64 package to decode encoded String.
-     * If current device SDK is lower than Android Oreo, using super implementation can cause ClassNotFoundException.
-     * @return String decoded from android.util.Base64.decode(encodedString, flag).
+     * If current device SDK is lower than Android Oreo, using super implementation can cause {@link ClassNotFoundException}.
+     * @return String decoded from {@link android.util.Base64#decode(String, int)}.
      */
     @Override
     public String getDecodedPassword() {

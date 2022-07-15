@@ -1,8 +1,13 @@
 package dev.nurujjamanpollob.javamailer.sender;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import dev.nurujjamanpollob.javamailer.security.SecurityDriver;
+import dev.nurujjamanpollob.javamailer.security.utility.SecurityPluginUtility;
 
 /**
  * Class to store and retrieve mail service based configurations
@@ -12,10 +17,10 @@ public class Provider {
     private final String mailSMTPHostAddress;
     private final String mailSMTPPortAddress;
     private final String socketFactoryClassName;
-    private final Boolean isUseAuth;
+    private final String isUseAuth;
     private final String socketFactoryPortAddress;
     private final Map<String, String> configurations = new HashMap<>();
-    private Boolean isUseTLS = false;
+    private String isUseTLS = "false";
 
 
     /**
@@ -34,12 +39,12 @@ public class Provider {
             String socketFactoryPortAddress,
             String javaSocketFactoryClassName,
             Boolean isUseAuth
-    ) {
-        this.mailSMTPHostAddress = mailSMTPHostAddress;
-        this.mailSMTPPortAddress = mailSMTPPortAddress;
-        this.socketFactoryClassName = javaSocketFactoryClassName;
-        this.isUseAuth = isUseAuth;
-        this.socketFactoryPortAddress = socketFactoryPortAddress;
+    ) throws Exception {
+        this.mailSMTPHostAddress = checkAndDecode(0,0, mailSMTPHostAddress);
+        this.mailSMTPPortAddress = checkAndDecode(0, 1, mailSMTPPortAddress);
+        this.socketFactoryClassName = checkAndDecode(0, 2, javaSocketFactoryClassName);
+        this.isUseAuth = checkAndDecode(0,3, isUseAuth.toString());
+        this.socketFactoryPortAddress = checkAndDecode(0, 4, socketFactoryPortAddress);
 
         // Put all configurations
         configurations.put("mail.smtp.host", getMailSMTPHostAddress());
@@ -67,13 +72,13 @@ public class Provider {
             String socketFactoryPortAddress,
             String javaSocketFactoryClassName,
             Boolean isUseAuth,
-            Boolean isUseTLS) {
-        this.mailSMTPHostAddress = mailSMTPHostAddress;
-        this.mailSMTPPortAddress = mailSMTPPortAddress;
-        this.socketFactoryClassName = javaSocketFactoryClassName;
-        this.isUseAuth = isUseAuth;
-        this.socketFactoryPortAddress = socketFactoryPortAddress;
-        this.isUseTLS = isUseTLS;
+            Boolean isUseTLS) throws Exception {
+        this.mailSMTPHostAddress = checkAndDecode(1, 0, mailSMTPHostAddress);
+        this.mailSMTPPortAddress = checkAndDecode(1, 1, mailSMTPPortAddress);
+        this.socketFactoryClassName = checkAndDecode(1, 2, javaSocketFactoryClassName);
+        this.isUseAuth = checkAndDecode(1, 3, isUseAuth.toString());
+        this.socketFactoryPortAddress = checkAndDecode(1, 4, socketFactoryPortAddress);
+        this.isUseTLS = checkAndDecode(1, 5, isUseTLS.toString());
 
         // Put all configurations
         configurations.put("mail.smtp.host", getMailSMTPHostAddress());
@@ -82,6 +87,19 @@ public class Provider {
         configurations.put("mail.smtp.auth", String.valueOf(getUseAuth()));
         configurations.put("mail.smtp.port", getMailSMTPPortAddress());
 
+    }
+
+
+
+    /**
+     * Suppress default constructor for non-instantiable for no args constructor
+     */
+    private Provider() {
+        this.mailSMTPHostAddress = null;
+        this.mailSMTPPortAddress = null;
+        this.socketFactoryClassName = null;
+        this.isUseAuth = String.valueOf(false);
+        this.socketFactoryPortAddress = null;
     }
 
     /**
@@ -102,7 +120,7 @@ public class Provider {
      * @return passed isUseAuth parameter
      */
     public Boolean getUseAuth() {
-        return isUseAuth;
+        return isUseAuth.equals("true");
     }
 
     /**
@@ -133,12 +151,12 @@ public class Provider {
      * @return passed isUseTls parameter, if no parameter is passed via constructor, the default value (false) is returned.
      */
     public Boolean getIsUseTLS() {
-        return isUseTLS;
+        return isUseTLS.equals("true");
     }
 
     /**
      * Method to get configuration set map for configure library plugin
-     * @return Key value pain in array.
+     * @return Key value pair in array.
      */
     public Map<String, String> getAllConfigurations(){
 
@@ -164,4 +182,40 @@ public class Provider {
         return null;
     }
 
+    /**
+     * Method to check for if a parameter is annotated with {@link dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith}
+     * If so, use the appropriate decoder library and claas to decode the value.
+     * @throws Exception if the decoder library found errors during decoding, for detailed information, check the exception message.
+     */
+
+    private String checkAndDecode(int constructorIndex, int parameterIndex, String baseValue) throws Exception {
+
+        // Create instance of SecurityPluginUtility class
+        SecurityPluginUtility securityPluginUtility = new SecurityPluginUtility(constructorIndex, super.getClass(), parameterIndex);
+
+        // Check if annotation is present
+        if(securityPluginUtility.isConstructorParameterIsAnnotatedWithAnnotationClass()){
+
+            // Return the decoded value
+            return new SecurityDriver(baseValue, securityPluginUtility.getDecoderClassForSecurityDriver()).getDecodedString();
+        }
+
+        // It seems the field is not annotated for decoding, so returning the base value
+        return baseValue;
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Provider{" +
+                "mailSMTPHostAddress='" + mailSMTPHostAddress + '\'' +
+                ", mailSMTPPortAddress='" + mailSMTPPortAddress + '\'' +
+                ", socketFactoryClassName='" + socketFactoryClassName + '\'' +
+                ", isUseAuth='" + isUseAuth + '\'' +
+                ", socketFactoryPortAddress='" + socketFactoryPortAddress + '\'' +
+                ", configurations=" + configurations +
+                ", isUseTLS='" + isUseTLS + '\'' +
+                '}';
+    }
 }

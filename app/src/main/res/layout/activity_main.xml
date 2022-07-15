@@ -8,7 +8,22 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- TODO: Need to implement a another class demonstration this idea! -->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="46dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/switch_to_encrypted_credential_version"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -22,14 +37,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Input receipient email address"
+            android:text="@string/input_receipient_email_address"
             android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/email_receiver_filed"
             android:layout_width="250dp"
-            android:background="@color/white"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:padding="25dp"
             android:textColor="@color/black" />
 
@@ -37,45 +52,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Enter Mail Subject"
+            android:text="@string/enter_mail_subject"
             android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/email_subject_filed"
             android:layout_width="250dp"
-            android:padding="25dp"
-            android:textColor="@color/black"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            android:layout_height="wrap_content" />
+            android:padding="25dp"
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="Enter your message"
+            android:text="@string/enter_your_message"
             android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/email_message_field"
             android:layout_width="250dp"
-            android:padding="25dp"
-            android:textColor="@color/black"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            android:layout_height="wrap_content" />
+            android:padding="25dp"
+            android:textColor="@color/black" />
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="10dp"
             android:id="@+id/pick_file"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/ic_baseline_attach_file_24" />
 
         <Button
+            android:id="@+id/email_submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Email"
-            android:id="@+id/email_submit_button" />
+            android:text="@string/send_email" />
 
     </LinearLayout>
 

@@ -9,7 +9,7 @@ public class Providers {
      */
 
     @Deprecated
-    public static Provider useGmailProvider(){
+    public static Provider useGmailProvider() throws Exception {
 
         String gmailHostName = "smtp.gmail.com";
         String gmailSmtpPort = "25";

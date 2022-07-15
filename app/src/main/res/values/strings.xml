@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AndroidMailer</string>
+    <string name="send_email">Send Email</string>
+    <string name="enter_your_message">Enter your message</string>
+    <string name="enter_mail_subject">Enter Mail Subject</string>
+    <string name="input_receipient_email_address">Input receipient email address</string>
+    <string name="switch_to_encrypted_credential_version">Switch To Encrypted Credential version</string>
 </resources>

@@ -5,6 +5,7 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,7 +26,6 @@ import dev.nurujjamanpollob.javamailer.backgroundtaskexecutor.NJPollobCustomAsyn
 import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.security.SecurityDriver;
 import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
-import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
 import dev.nurujjamanpollob.javamailer.security.utility.SecurityPluginUtility;
 
 /**
@@ -77,11 +77,11 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
             Provider serviceProviderConfiguration
     ) throws Exception {
 
-        this.fromAddress = checkIfAnnotatedForDecoding(0,fromAddress, 0);
-        this.toAddress = checkIfAnnotatedForDecoding(0, toAddress, 1);
-        this.password = checkIfAnnotatedForDecoding(0, password, 2);
-        this.mailSubject = checkIfAnnotatedForDecoding(0, mailSubject, 3);
-        this.mailMessage = checkIfAnnotatedForDecoding(0, mailMessage, 4);
+        this.fromAddress = checkIfAnnotatedForDecoding(fromAddress, 0);
+        this.toAddress = checkIfAnnotatedForDecoding(toAddress, 1);
+        this.password = checkIfAnnotatedForDecoding(password, 2);
+        this.mailSubject = checkIfAnnotatedForDecoding(mailSubject, 3);
+        this.mailMessage = checkIfAnnotatedForDecoding(mailMessage, 4);
         this.serviceProviderConfiguration = serviceProviderConfiguration;
     }
 
@@ -94,16 +94,15 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
      * @throws Exception if there are constructor index,
      * parameter index, Security driver SecurityPlugin class has no correct number of parameter, or decoding method invocation failed.
      */
-    @SuppressWarnings({"unchecked"})
-    private String checkIfAnnotatedForDecoding(int constructorIndex, String inputString, int parameterIndex) throws Exception {
+    private String checkIfAnnotatedForDecoding(String inputString, int parameterIndex) throws Exception {
 
-        SecurityPluginUtility securityPluginUtility = new SecurityPluginUtility(constructorIndex, super.getClass(), parameterIndex, DecodeWith.class);
+        SecurityPluginUtility securityPluginUtility = new SecurityPluginUtility(0, super.getClass(), parameterIndex);
 
         if(securityPluginUtility.isConstructorParameterIsAnnotatedWithAnnotationClass()){
 
-            Class<? extends SecurityPlugin> securityPluginClass = (Class<? extends SecurityPlugin>) securityPluginUtility.getDecoderClassForSecurityDriver();
+            Class<? extends SecurityPlugin> securityPluginClass = securityPluginUtility.getDecoderClassForSecurityDriver();
 
-            return new SecurityDriver(inputString, securityPluginClass).getDecodedPasscode();
+            return new SecurityDriver(inputString, securityPluginClass).getDecodedString();
         }
 
         return inputString;
@@ -344,4 +343,38 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
         this.runThread();
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "MailSendWrapper{" +
+                "fromAddress='" + fromAddress + '\'' +
+                ", toAddress='" + toAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", mailSubject='" + mailSubject + '\'' +
+                ", mailMessage='" + mailMessage + '\'' +
+                ", listener=" + listener +
+                ", serviceProviderConfiguration=" + serviceProviderConfiguration +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", sendFileWithAttachment=" + sendFileWithAttachment +
+                ", attachments=" + Arrays.toString(attachments) +
+                '}';
+    }
+
+
+
+    public String getAllPassedParameters(){
+
+        return "MailSendWrapper{" +
+                "fromAddress='" + fromAddress + '\'' +
+                ", toAddress='" + toAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", mailSubject='" + mailSubject + '\'' +
+                ", mailMessage='" + mailMessage + '\'' +
+                ", listener=" + listener +
+                ", serviceProviderConfiguration=" + serviceProviderConfiguration +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", sendFileWithAttachment=" + sendFileWithAttachment +
+                ", attachments=" + Arrays.toString(attachments) +
+                '}';
+    }
 }

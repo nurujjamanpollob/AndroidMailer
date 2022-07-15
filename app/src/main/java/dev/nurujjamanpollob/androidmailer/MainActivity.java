@@ -22,9 +22,9 @@ import dev.nurujjamanpollob.javamailer.utility.AndroidUriToAttachmentUtility;
 public class MainActivity extends AppCompatActivity {
 
 
-    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "fromaddress@domain.com";
-    private final String MAIL_HOST = "mail.domain.com";
-    private final String MAIL_PASSWORD = "mailbosspasswordhere";
+    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "technicalsupport@softyprog.com";
+    private final String MAIL_HOST = "mail.privateemail.com";
+    private final String MAIL_PASSWORD = "passwordupdated$$0203040506$$";
     private final int pickFileRequestCode = 11223344;
     private final String smtpPortAddress = "465";
     private final String socketFactoryPortAddress = "465";
@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
             use: serviceProviderConfig.putConfiguration(String propertyKey, String propertyValue);
             This can also be used to Override current mail service configuration
              */
-
-
 
             // send email to server using wrapper
             MailSendWrapper mailSendWrapper = null;
@@ -125,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
             else {
                 mailSendWrapper.doSendEmailToFollowingClient();
             }
+
+            // Print debug message
+            System.out.println("Mail send wrapper configs: " + mailSendWrapper);
+            System.out.println("Provider configs: " + serviceProviderConfig);
 
         });
 
