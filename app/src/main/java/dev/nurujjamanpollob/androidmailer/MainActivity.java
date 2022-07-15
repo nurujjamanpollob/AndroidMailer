@@ -22,9 +22,9 @@ import dev.nurujjamanpollob.javamailer.utility.AndroidUriToAttachmentUtility;
 public class MainActivity extends AppCompatActivity {
 
 
-    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "technicalsupport@softyprog.com";
-    private final String MAIL_HOST = "mail.privateemail.com";
-    private final String MAIL_PASSWORD = "passwordupdated$$0203040506$$";
+    private final String MAIL_SENDER_SEND_FROM_ADDRESS = "fromaddress@domain.com";
+    private final String MAIL_HOST = "mail.domain.com";
+    private final String MAIL_PASSWORD = "mailbosspasswordhere";
     private final int pickFileRequestCode = 11223344;
     private final String smtpPortAddress = "465";
     private final String socketFactoryPortAddress = "465";
