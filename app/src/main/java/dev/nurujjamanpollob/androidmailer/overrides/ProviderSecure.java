@@ -59,43 +59,42 @@
 
 package dev.nurujjamanpollob.androidmailer.overrides;
 
-import androidx.annotation.NonNull;
-
 import dev.nurujjamanpollob.androidmailer.decoderunit.DemoDecoder;
 import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
-import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Provider;
 
 /**
- * A simple class to demonstrate how the @DecodeWith(decoder = Decoder.class) is works with MailSendWrapper class
- * and decode the target parameter value with Decoder class before send email to client to ensure better security.
- * All super parameter with String has support for @DecodeWith annotation
+ * This class Inherits {@link Provider} class and overrides constructors to add decoder support,
+ * though a custom decoder class, named {@link DemoDecoder}.
+ *
+ * if you want to exclude a parameter from decoder, you should not mark this parameter with @DecodeWith annotation.
+ *
+ * This example usages {@link DemoDecoder} as example, and the decoder class is responsible for decoding the encoded String,
+ * you can also create your own decoder class, and can use different decoder for per parameter.
+ *
+ * For more information, please refer to {@link Provider} {@link dev.nurujjamanpollob.javamailer.security.SecurityPlugin} class documentation.
  */
-public class MailWrapperSecure extends MailSendWrapper {
-    /**
-     * Constructor Parameter to Configure MailSendWrapper with basic parameters.
-     * Supports decoding support of all String parameters that annotated with @DecodeWith
-     *
-     * @param fromAddress                  set the email from address field,
-     *                                     for example if you are sending email by nurujjamanpollob@androiddev.io,
-     *                                     you should pass this value as argument.
-     * @param toAddress                    set the target address, the recipient address.
-     * @param password                     the SMTP host or POP3 host account password
-     * @param mailSubject                  set the email subject.
-     * @param mailMessage                  sets the email body message.
-     * @param serviceProviderConfiguration argument for Provider class, that contains SMTP or POP3 server configuration to send the email.
-     *                                     For more information,
-     * @see Provider class for more information
-     */
-    public MailWrapperSecure(
-            @NonNull String fromAddress,
-            @NonNull String toAddress,
-            @DecodeWith(decoder = DemoDecoder.class)
-            @NonNull String password,
-            @NonNull String mailSubject,
-            @NonNull String mailMessage,
-            @NonNull Provider serviceProviderConfiguration
-    ) throws Exception {
-        super(fromAddress, toAddress, password, mailSubject, mailMessage, serviceProviderConfiguration);
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class ProviderSecure extends Provider {
+
+
+    public ProviderSecure(
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth) {
+
+        super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth);
+    }
+
+    public ProviderSecure(
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseTLS) {
+        super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth, isUseTLS);
     }
 }

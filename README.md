@@ -401,7 +401,7 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 <table> 
 	
 <tr>
-<th> <h4> Class <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/MailSendWrapper.java">MailSendWrapper</a></th>
+<th> <h4> Class <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/MailSendWrapper.java">MailSendWrapper</a></h4></th>
 <th> public MailSendWrapper(@NonNull String fromAddress, @NonNull String toAddress, @NonNull String password, @NonNull String mailSubject, @NonNull String mailMessage, @NonNull Provider serviceProviderConfiguration) throws Exception</th>	
 </tr>
 	
