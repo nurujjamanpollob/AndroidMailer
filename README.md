@@ -9,17 +9,22 @@ Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to uti
 
 ## Project Configuration
 
-You need to add following code in your project level build.gradle file:
+You need to add following code in your project level <b>build.gradle</b> file:
 
 <pre>
 <code>  	
-allprojects {
-    repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-		
-    }
+repositories {
 
+...
+   maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
+	    
+	     credentials {
+                username = "nurujjamanpollob"
+                password = "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"
+            }
+        }
 }
 </code>
 </pre>
@@ -32,11 +37,22 @@ Note:Newer gradle android project prefer settings.gradle repository configuratio
 
 <pre>
 <code>  
-pluginManagement {
-	repositories {
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+    
         ...
-        maven { url 'https://jitpack.io' }
-              
+	
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
+	    
+	     credentials {
+                username = "nurujjamanpollob"
+                password = "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"
+            }
+        }
     }
 }
 </code>
@@ -51,9 +67,25 @@ After that, you should add following code in your app module's <b>build.gradle</
 <pre>
 <code> 	
 dependencies {
-	implementation 'com.github.nurujjamanpollob:AndroidMailer:2.1'
+	implementation 'dev.nurujjamanpollob:androidmailer:2.2.0'
 }
 </code>
+</pre>
+
+You may also need to use <b>packagingOptions</b> option, in your app module, in order to fix duplicated <b>NOTICE.TXT</b> <b>COPYRIGHT.TXT</b> files inside this library module, which is stops you from compiling this app.
+
+To do so, add this code:
+
+<pre>
+<code> 
+    android {
+    packagingOptions {
+        resources.excludes += 'META-INF/LICENSE*'
+        resources.excludes += 'META-INF/NOTICE*'
+    }
+   }
+   
+  </code>
 </pre>
 
 This library needs internet permission to send data from phone to remote email server. So in your app module <b>AndroidManifest.xml</b> file, add this following code:
@@ -177,9 +209,9 @@ private Attachment attachment = new Attachment(byte[] fileByte, String fileNameI
 
 
 
-Easy to configure huh?
+So simple to work!
 
-Anyway, to send Attachment or Attachment array, you need a instance of <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment.Java</a>
+Anyway, to send Attachment or Attachment array, you need a instance of <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment.Java</a>,
 
 Whichs needs a <b>byte[]</b>, <b>File Name with extension </b>, <b> File Mime Type </b> as a constructor parameter, So the libarary plugin can process your attachment.
 
@@ -260,13 +292,13 @@ So the implementation will be like this:
 </pre>
 
 
-Isn't easy to implement, huh?
+Simple to implement!
 
 Lets enjoy fully working email sending functionality from your app without worry about performance, crashes, compatibity.
 
 For your help, I have a sample app module, that has contains full implementation of how to use this library. You can check that module to learn in more depth.
 
-For your quick jump, click here to see the sample activity file that implemented this following code: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/MainActivity.java">MainActivity.java</a>
+For quick reference, click here to see the sample activity file that implemented this following code: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/MainActivity.java">MainActivity.java</a>
 
 
 
@@ -442,6 +474,21 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 ## Version 2.1 - Added @DecodeWith Coverage for Provider Class
 
 The implemetaion is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
+
+<b>Note:</b> Only constructor index from <b>0</b> and <b>1</b> checked and for first constructor, the parameter index from <b>0</b> to <b>4</b>, see ref <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L95">Provider.Java at Line 95 </a> and for second constructor, only parameter index from <b>0</b> to <b>5</b> is checked, see <a ref="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L128">Provider.Java at Line 128</a>
+
+So, If you want to add additional parameter, you should add them at the end of these parameter range, and they will be not checked and processed by this library.
+
+Why this limitation? Because, This project is not using Dependency Injection, and it will be added in the future releases.
+
+For workaround, you can play with API from this library:
+
+<ul>
+<li><b>dev.nurujjamanpollob.javamailer.security.SecurityDriver</b></li>
+<li><b>dev.nurujjamanpollob.javamailer.security.utility.SecurityPluginUtility</b></li>
+</ul>
+
+Check for guides and documentations to cover for additional scope, if you need any!
 
 
 A eaxmple is a great a way how this thing will work. So, lets do it.
