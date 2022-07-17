@@ -51,7 +51,7 @@ After that, you should add following code in your app module's <b>build.gradle</
 <pre>
 <code> 	
 dependencies {
-	implementation 'com.github.nurujjamanpollob:AndroidMailer:2.0'
+	implementation 'com.github.nurujjamanpollob:AndroidMailer:2.1'
 }
 </code>
 </pre>
@@ -336,10 +336,9 @@ public class DemoDecoder extends SecurityPlugin {
 
 
 
-After that, you need to Create a new Class that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/MailSendWrapper.java">MailSendWrapper</a> class and in Constructor parameter, You need to annotate a Parameter with <b>@DecodeWith(decoder = DemoDecoder.class)</b> to have decoding support before send email to client, and you must pass this parameter to <b>super</b> constructor to get working support.
+After that, you need to Create a new Class that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/MailSendWrapper.java">MailSendWrapper</a> class and in constructor parameter matching super, You need to annotate parameters where you need decoding support,  with <b>@DecodeWith(decoder = DemoDecoder.class)</b>, here <b>decoder = DemoDecoder.class</b> is a custom decoder class.
 	
 <b>The example here: </b>
-
 <pre>
 <code> 
 import androidx.annotation.NonNull;
@@ -391,7 +390,11 @@ public class MailWrapperSecure extends MailSendWrapper {
 In this example, I have used only <b>decoder</b> in password field only, anyway, you are free to use <b>@DecodeWith</b> in <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/decoderunit/DemoDecoder.java">DemoDecoder.java</a> class, and it's all String parameter has been supported.
 
 
-Note: <b>@DecodeWith</b> only works with <b>MailSendWrapper</b> class and it's all String parameter. other scope will be covered in <b>2.1</b> release.
+Note: <del> <b>@DecodeWith</b> only works with <b>MailSendWrapper</b> class and it's all String parameter. other scope will be covered in <b>2.1</b> release. </del>
+
+Released <b>2.1</b> version so the <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> scope is covered.
+
+Please see <b>2.1</b> documentaion for detailed reference.
 
 	
 For now, I never added any <b>encryption/decryption library</b>. Please use your preferred library to get support.
@@ -430,10 +433,167 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 	
 <tr>
 <td> serviceProviderConfiguration </td>
-<td> ❌ </td>
+<td> ☑(See 2.1 version reference) </td>
 </tr>
 
 </table>
+
+
+## Version 2.1 - Added @DecodeWith Coverage for Provider Class
+
+The implemetaion is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
+
+
+A eaxmple is a great a way how this thing will work. So, lets do it.
+
+First step involving design the decoder class, In this case, I have used this following example:
+
+The class source link here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/decoderunit/DemoDecoder.java">DemoDecoder.java</a>
+
+<pre>
+<code>
+
+import android.util.Base64;
+
+import java.util.Arrays;
+
+import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
+import dev.nurujjamanpollob.javamailer.security.utility.SecurityDriverException;
+
+/**
+ * Class to demonstrate The String decoding strategy,
+ * that is up to developer,
+ * and developer is responsible for implement the decoding logic flow.
+ * Highly customizable security plugin support for AndroidMailer library.
+ * In this example, I gonna use android.util.Base64 to decode encoded String.
+ * You can use any logic flow, and a guaranteed execution is confirmed.
+ * Override {@link SecurityPlugin#getDecodedString()} to implement decoding logic flow.
+ */
+public class DemoDecoder extends SecurityPlugin {
+
+   private final String encodedPassword;
+
+    /**
+     * Parameter to accept encoded String
+     * @param encodedPass the encoded String.
+     */
+    public DemoDecoder(String encodedPass) throws SecurityDriverException {
+        // super call is requires for SecurityPlugin class
+        super(encodedPass);
+        // get encoded string from parameter and store in field for implement decoding logic flow.
+        this.encodedPassword = encodedPass;
+
+    }
+
+    /**
+     * TODO: Developer Implementation part
+     * Override this method to customize the default implementation of {@link SecurityPlugin#getDecodedString()}
+     * By default, it usages java.util.Base64 package to decode encoded String.
+     * If current device SDK is lower than Android Oreo, using super implementation can cause {@link ClassNotFoundException}.
+     * @return String decoded from {@link android.util.Base64#decode(String, int)}.
+     */
+    @Override
+    public String getDecodedString() {
+
+        // Use default flag to decode from android.util.Base64
+        byte[] stringBytes = Base64.decode(encodedPassword, Base64.DEFAULT);
+        // return decoded String
+        return new String(stringBytes);
+    }
+}
+
+</code>
+</pre>
+
+
+So, next step is to create a new class, and inherit <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a>. class, and mark parameters from constructor matching super, that needs to be decoded with @DecodeWith annotation and set newly created decoder class for decoding logic flow.
+
+Okay, the class source is here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/overrides/ProviderSecure.java">ProviderSecure.java</a>
+
+The file can be found here: 
+
+<pre>
+    <code>
+    
+import dev.nurujjamanpollob.androidmailer.decoderunit.DemoDecoder;
+import dev.nurujjamanpollob.javamailer.security.annotation.DecodeWith;
+import dev.nurujjamanpollob.javamailer.sender.Provider;
+
+/**
+ * This class Inherits {@link Provider} class and overrides constructors to add decoder support,
+ * though a custom decoder class, named {@link DemoDecoder}.
+ *
+ * if you want to exclude a parameter from decoder, you should not mark this parameter with @DecodeWith annotation.
+ *
+ * This example usages {@link DemoDecoder} as example, and the decoder class is responsible for decoding the encoded String,
+ * you can also create your own decoder class, and can use different decoder for per parameter.
+ *
+ * For more information, please refer to {@link Provider} {@link dev.nurujjamanpollob.javamailer.security.SecurityPlugin} class documentation.
+ */
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class ProviderSecure extends Provider {
+
+
+    public ProviderSecure(
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth) throws Exception{
+
+        super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth);
+    }
+
+    public ProviderSecure(
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
+            @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth,
+            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseTLS) throws Exception{
+        super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth, isUseTLS);
+    }
+}
+
+</code>
+</pre>
+
+Then, set this custom provider configuration like this:
+
+<pre>
+<code>
+ // Create service provider configuration
+        ProviderSecure serviceProviderConfig = new ProviderSecure(
+                MAIL_HOST,
+                smtpPortAddress,
+                socketFactoryPortAddress,
+                Providers.getSecureSocketFactoryName(),
+                isUseAuth,
+                isUseTls);
+
+        // Print service provider configuration
+        printProviderConfigs(serviceProviderConfig);
+
+            /*
+            Basic mail credentials is provided, if you need to provide additional mail properties,
+            use: serviceProviderConfig.putConfiguration(String propertyKey, String propertyValue);
+            This can also be used to Override current mail service configuration
+             */
+        // send email to server using wrapper
+        MailSendWrapper mailSendWrapper = new MailWrapperSecure(
+                MAIL_SENDER_SEND_FROM_ADDRESS, // from address field
+                receiverMailAdd, // receiver mail address
+                MAIL_PASSWORD, // mailbox password
+                subject,
+                message,
+                serviceProviderConfig);
+</code>
+</pre>
+
+
+Anyway, a full example can be found here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/EncryptedActivityExample.java">EncryptedActivityExample.java</a>
+
+    
 
 ## Documentation
 
