@@ -473,9 +473,11 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 
 ## Version 2.1 - Added @DecodeWith Coverage for Provider Class
 
-The implemetaion is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
+The implementation is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
 
-<b>Note:</b> Only constructor index from <b>0</b> and <b>1</b> checked and for first constructor, the parameter index from <b>0</b> to <b>4</b>, see ref <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L95">Provider.Java at Line 95 </a> and for second constructor, only parameter index from <b>0</b> to <b>5</b> is checked, see <a ref="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L128">Provider.Java at Line 128</a>
+<b>Note:</b> Only constructor index from <b>0</b> and <b>1</b> checked and for first constructor, the parameter index from <b>0</b> to <b>4</b>, see ref <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L95">Provider.Java at Line 95 </a> 
+
+<br />and for second constructor, only parameter index from <b>0</b> to <b>5</b> is checked, see <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/702db05fec830d9c773089875d6f7456b13a1b32/androidmailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java#L128">Provider.Java at Line 128</a>
 
 So, If you want to add additional parameter, you should add them at the end of these parameter range, and they will be not checked and processed by this library.
 
@@ -491,7 +493,7 @@ For workaround, you can play with API from this library:
 Check for guides and documentations to cover for additional scope, if you need any!
 
 
-A eaxmple is a great a way how this thing will work. So, lets do it.
+A example is a great a way how this thing will work. So, lets do it.
 
 First step involving design the decoder class, In this case, I have used this following example:
 
