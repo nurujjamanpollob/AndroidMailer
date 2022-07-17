@@ -11,7 +11,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/JavaMailer" />
+            <option value="$PROJECT_DIR$/androidmailer" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

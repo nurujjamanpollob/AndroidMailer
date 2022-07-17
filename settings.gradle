@@ -80,4 +80,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AndroidMailer"
 include ':app'
-include ':JavaMailer'
+include ':androidmailer'

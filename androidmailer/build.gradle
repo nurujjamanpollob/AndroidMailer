@@ -135,3 +135,35 @@ dependencies {
 
 
 
+def getVersionName = { ->
+    return "2.2.0"
+}
+
+def getArtificatId = { ->
+    return "androidmailer"
+}
+
+publishing {
+    publications {
+        bar(MavenPublication) {
+            groupId 'dev.nurujjamanpollob'
+            artifactId getArtificatId()
+            version getVersionName()
+            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_PUBLISH_PACKAGE_TOKEN")
+            }
+        }
+    }
+}
+
+
+
