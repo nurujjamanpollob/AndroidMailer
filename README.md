@@ -9,65 +9,13 @@ Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to uti
 
 ## Project Configuration
 
-You need to add following code in your project level <b>build.gradle</b> file:
 
-<pre>
-<code>  	
-repositories {
-
-...
-   maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
-	    
-	     credentials {
-                username = "nurujjamanpollob"
-                password = "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"
-            }
-        }
-}
-</code>
-</pre>
-
-<br />
-
-<br />
-
-Note:Newer gradle android project prefer settings.gradle repository configuration over project level build.gradle configuration. In that case, you should add following code in your settings.gradle file:
-
-<pre>
-<code>  
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-    
-        ...
-	
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
-	    
-	     credentials {
-                username = "nurujjamanpollob"
-                password = "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"
-            }
-        }
-    }
-}
-</code>
-</pre>
-
-<br />
-<br />
-
-
-After that, you should add following code in your app module's <b>build.gradle</b> file:
+Add following code to your module's <b>build.gradle</b> file:
 
 <pre>
 <code> 	
 dependencies {
-	implementation 'dev.nurujjamanpollob:androidmailer:2.2.0'
+	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.0'
 }
 </code>
 </pre>
