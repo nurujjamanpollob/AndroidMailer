@@ -57,22 +57,33 @@
  * </code>
  */
 
+
 plugins {
     id 'com.android.library'
     id 'maven-publish'
     id 'com.kezong.fat-aar'
+
 }
 
-afterEvaluate {
 
-    publishing{
-        publications{
-            release(MavenPublication) {
-                from components.release
-            }
-        }
-    }
+ext {
+    PUBLISH_GROUP_ID = 'io.github.nurujjamanpollob.androidmailer'
+    PUBLISH_VERSION = '2.2.0'
+    PUBLISH_ARTIFACT_ID = 'androidmailer'
+    PUBLISH_DESCRIPTION = 'Android Library to send email using SMTP server'
+    PUBLISH_URL = 'https://github.com/nurujjamanpollob/AndroidMailer'
+    PUBLISH_LICENSE_NAME = 'Apache License'
+    PUBLISH_LICENSE_URL = 'https://github.com/nurujjamanpollob/AndroidMailer/blob/master/LICENCE'
+    PUBLISH_DEVELOPER_ID = 'nurujjamanpollob'
+    PUBLISH_DEVELOPER_NAME = 'Nurujjaman Pollob'
+    PUBLISH_DEVELOPER_EMAIL = 'nurujjamanpollob@gmail.com'
+    PUBLISH_SCM_CONNECTION = 'scm:git:github.com/nurujjamanpollob/AndroidMailer.git'
+    PUBLISH_SCM_DEVELOPER_CONNECTION = 'scm:git:ssh://github.com/nurujjamanpollob/AndroidMailer.git'
+    PUBLISH_SCM_URL = 'https://github.com/nurujjamanpollob/AndroidMailer/tree/master'
 }
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
 android {
     packagingOptions {
 
@@ -133,37 +144,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
-
-
-def getVersionName = { ->
-    return "2.2.0"
-}
-
-def getArtificatId = { ->
-    return "androidmailer"
-}
-
-publishing {
-    publications {
-        bar(MavenPublication) {
-            groupId 'dev.nurujjamanpollob'
-            artifactId getArtificatId()
-            version getVersionName()
-            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
-            credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_PUBLISH_PACKAGE_TOKEN")
-            }
-        }
-    }
-}
 
 
 
