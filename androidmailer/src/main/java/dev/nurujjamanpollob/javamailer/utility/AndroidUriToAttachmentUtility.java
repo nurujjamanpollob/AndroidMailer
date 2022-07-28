@@ -55,6 +55,8 @@
  *
  *     Done! Clean code!!
  * </code>
+ *
+ *
  */
 
 package dev.nurujjamanpollob.javamailer.utility;
@@ -79,23 +81,24 @@ public class AndroidUriToAttachmentUtility {
     private final Uri fileUri;
     private final Activity activity;
 
-    public AndroidUriToAttachmentUtility(Uri uri, Activity activity){
+    public AndroidUriToAttachmentUtility(Uri uri, Activity activity) {
         this.activity = activity;
         this.fileUri = uri;
     }
 
     /**
      * Method to get byte array content resolver from uri
+     *
      * @return the file byte array from uri
      * @throws AttachmentException if the file length is more than 25 MB
      */
-    public byte[] getFileByte() throws AttachmentException{
+    public byte[] getFileByte() throws AttachmentException {
 
         // check attachment length
         CommonFunctions.ByteUnitInformation byteUnitInformation = CommonFunctions.convertByteToHumanReadableUnit(getAttachmentSize());
 
         // File is larger than 25 MB? throw exception
-        if(byteUnitInformation.getUnit() == CommonFunctions.ByteUnit.MEGA_BYTE && byteUnitInformation.getValue() > Variables.MAX_FILE_UPLOAD_SIZE_IN_MB){
+        if (byteUnitInformation.getUnit() == CommonFunctions.ByteUnit.MEGA_BYTE && byteUnitInformation.getValue() > Variables.MAX_FILE_UPLOAD_SIZE_IN_MB) {
             throw new AttachmentException("Attachment size is more than 25 MB");
         }
 
@@ -114,11 +117,12 @@ public class AndroidUriToAttachmentUtility {
         } catch (IOException e) {
             return null;
         }
-       return byteArrayOutputStream.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 
     /**
      * Method to get file name from uri
+     *
      * @return the file name from uri
      */
     public String getFileName() {
@@ -155,6 +159,7 @@ public class AndroidUriToAttachmentUtility {
 
     /**
      * Get content type of file from uri
+     *
      * @return the content type of file
      */
     public String getMimeType() {
@@ -170,16 +175,24 @@ public class AndroidUriToAttachmentUtility {
         return mimeType;
     }
 
-    public Attachment getAttachmentInstance() throws AttachmentException{
+    /**
+     * Method to return a new instance of Attachment object
+     *
+     * @return a new instance of Attachment object with props from current class
+     * @throws AttachmentException if the file length is more than 25 MB
+     */
+
+    public Attachment getAttachmentInstance() throws AttachmentException {
 
         return new Attachment(getFileByte(), getFileName(), getMimeType());
     }
 
     /**
      * Method to calculate the file byte length
+     *
      * @return the file byte length from uri
      */
-    private long getAttachmentSize(){
+    private long getAttachmentSize() {
 
         Cursor returnCursor = activity.getContentResolver().query(fileUri, null, null, null, null);
         /*

@@ -55,14 +55,14 @@
  *
  *     Done! Clean code!!
  * </code>
+ *
+ *
  */
 
 package dev.nurujjamanpollob.androidmailer.decoderunit;
 
 
 import android.util.Base64;
-
-import java.util.Arrays;
 
 import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
 import dev.nurujjamanpollob.javamailer.security.utility.SecurityDriverException;

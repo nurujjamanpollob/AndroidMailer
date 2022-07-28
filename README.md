@@ -9,60 +9,7 @@ Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to uti
 
 ## Project Configuration
 
-You need to add following code in your project level <b>build.gradle</b> file:
-
-<pre>
-<code>  	
-repositories {
-
-...
-   maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
-	    
-	     credentials {
-                username = "nurujjamanpollob"
-                password = "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"
-            }
-        }
-}
-</code>
-</pre>
-
-<br />
-
-<br />
-
-Note:Newer gradle android project prefer settings.gradle repository configuration over project level build.gradle configuration. In that case, you should add following code in your settings.gradle file:
-
-<pre>
-<code>  
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-    
-        ...
-	
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/nurujjamanpollob/AndroidMailer")
-	    
-	     credentials {
-                username = "nurujjamanpollob"
-                password = "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"
-            }
-        }
-    }
-}
-</code>
-</pre>
-
-<br />
-<br />
-
-
-After that, you should add following code in your app module's <b>build.gradle</b> file:
+You need to add following code in your app level <b>build.gradle</b> file:
 
 <pre>
 <code> 	
@@ -72,7 +19,7 @@ dependencies {
 </code>
 </pre>
 
-You may also need to use <b>packagingOptions</b> option, in your app module, in order to fix duplicated <b>NOTICE.TXT</b> <b>COPYRIGHT.TXT</b> files inside this library module, which is stops you from compiling this app.
+You also need to use <b>packagingOptions</b> option, in your app module, in order to fix duplicated <b>NOTICE.TXT</b> <b>COPYRIGHT.TXT</b> files inside this library module, which is stops you from compiling this app.
 
 To do so, add this code:
 
@@ -95,7 +42,7 @@ This library needs internet permission to send data from phone to remote email s
 
 So, as far, your project configuration is done. Let's dive into implementation part!
 
-## Implementaion
+## Implementation
 
 It's very easy to use this library to send email, and listen on email sending event, you can configure this library in your own way, and this library is designed to help save your time.
 
@@ -213,7 +160,7 @@ So simple to work!
 
 Anyway, to send Attachment or Attachment array, you need a instance of <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment.Java</a>,
 
-Whichs needs a <b>byte[]</b>, <b>File Name with extension </b>, <b> File Mime Type </b> as a constructor parameter, So the libarary plugin can process your attachment.
+Which needs a <b>byte[]</b>, <b>File Name with extension </b>, <b> File Mime Type </b> as a constructor parameter, So the libarary plugin can process your attachment.
 
 Now, in this example, I gonna show you how to use Android File Picker to pick a file, and use <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/utility/AndroidUriToAttachmentUtility.java">AndroidUriToAttachmentUtility.java</a> to process the Android File Intent Uri to get a <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment</a> instance.
 
@@ -265,7 +212,7 @@ Then, add this method, firing this method will launch a file picker dialog to ch
 </code>
 </pre>
 
-Now Override <pre><code>onActivityresult(requestCode, resultCode, data)</code></pre> in your activity and add following code, 
+Now Override <pre><code>onActivityResult(requestCode, resultCode, data)</code></pre> in your activity and add following code, 
 
 So the implementation will be like this: 
 
@@ -471,7 +418,7 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 </table>
 
 
-## Version 2.1 - Added @DecodeWith Coverage for Provider Class
+## Version 2.2.0 - Added @DecodeWith Coverage for Provider Class
 
 The implementation is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
 
@@ -579,7 +526,7 @@ import dev.nurujjamanpollob.javamailer.sender.Provider;
  *
  * For more information, please refer to {@link Provider} {@link dev.nurujjamanpollob.javamailer.security.SecurityPlugin} class documentation.
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused"})
 public class ProviderSecure extends Provider {
 
 
@@ -642,6 +589,10 @@ Then, set this custom provider configuration like this:
 
 Anyway, a full example can be found here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/EncryptedActivityExample.java">EncryptedActivityExample.java</a>
 
+# Update 2.2.2 - Added check for attachment size
+
+This library usages a RAW byte array to store attachment data, which stores in your application memory. Larger attachment will cause Out Of Memory Exception. To avoid this, this library measure the total attachment size, and if the total size is larger than 25MB(Single or multiple length), It will then throw exception.
+This check ensures consistency for your application performance.
     
 
 ## Documentation
