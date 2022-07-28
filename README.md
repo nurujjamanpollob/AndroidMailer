@@ -9,8 +9,7 @@ Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to uti
 
 ## Project Configuration
 
-
-Add following code to your module's <b>build.gradle</b> file:
+You need to add following code in your app level <b>build.gradle</b> file:
 
 <pre>
 <code> 	
@@ -20,7 +19,7 @@ dependencies {
 </code>
 </pre>
 
-You may also need to use <b>packagingOptions</b> option, in your app module, in order to fix duplicated <b>NOTICE.TXT</b> <b>COPYRIGHT.TXT</b> files inside this library module, which is stops you from compiling this app.
+You also need to use <b>packagingOptions</b> option, in your app module, in order to fix duplicated <b>NOTICE.TXT</b> <b>COPYRIGHT.TXT</b> files inside this library module, which is stops you from compiling this app.
 
 To do so, add this code:
 
@@ -161,7 +160,7 @@ So simple to work!
 
 Anyway, to send Attachment or Attachment array, you need a instance of <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment.Java</a>,
 
-Whichs needs a <b>byte[]</b>, <b>File Name with extension </b>, <b> File Mime Type </b> as a constructor parameter, So the libarary plugin can process your attachment.
+Which needs a <b>byte[]</b>, <b>File Name with extension </b>, <b> File Mime Type </b> as a constructor parameter, So the libarary plugin can process your attachment.
 
 Now, in this example, I gonna show you how to use Android File Picker to pick a file, and use <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/utility/AndroidUriToAttachmentUtility.java">AndroidUriToAttachmentUtility.java</a> to process the Android File Intent Uri to get a <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/entity/Attachment.java">Attachment</a> instance.
 
@@ -213,7 +212,7 @@ Then, add this method, firing this method will launch a file picker dialog to ch
 </code>
 </pre>
 
-Now Override <pre><code>onActivityresult(requestCode, resultCode, data)</code></pre> in your activity and add following code, 
+Now Override <pre><code>onActivityResult(requestCode, resultCode, data)</code></pre> in your activity and add following code, 
 
 So the implementation will be like this: 
 
@@ -527,7 +526,7 @@ import dev.nurujjamanpollob.javamailer.sender.Provider;
  *
  * For more information, please refer to {@link Provider} {@link dev.nurujjamanpollob.javamailer.security.SecurityPlugin} class documentation.
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused"})
 public class ProviderSecure extends Provider {
 
 
@@ -590,9 +589,10 @@ Then, set this custom provider configuration like this:
 
 Anyway, a full example can be found here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/EncryptedActivityExample.java">EncryptedActivityExample.java</a>
 
-# Version 2.2.1 - Add limit for attachment size
+# Update 2.2.2 - Added check for attachment size
 
-This update brings a fix for mail attachment. As this library needs byte array from RAM memory, using larger attachment will cause Out Of Memory Exception. To fix, a implementation to check 
+This library usages a RAW byte array to store attachment data, which stores in your application memory. Larger attachment will cause Out Of Memory Exception. To avoid this, this library measure the total attachment size, and if the total size is larger than 25MB(Single or multiple length), It will then throw exception.
+This check ensures consistency for your application performance.
     
 
 ## Documentation

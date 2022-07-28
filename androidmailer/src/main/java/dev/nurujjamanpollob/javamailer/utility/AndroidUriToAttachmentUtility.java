@@ -65,12 +65,15 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.webkit.MimeTypeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import dev.nurujjamanpollob.javamailer.CommonFunctions;
+import dev.nurujjamanpollob.javamailer.Variables;
 import dev.nurujjamanpollob.javamailer.entity.Attachment;
 
 public class AndroidUriToAttachmentUtility {
@@ -78,30 +81,50 @@ public class AndroidUriToAttachmentUtility {
     private final Uri fileUri;
     private final Activity activity;
 
-    public AndroidUriToAttachmentUtility(Uri uri, Activity activity){
+    public AndroidUriToAttachmentUtility(Uri uri, Activity activity) {
         this.activity = activity;
         this.fileUri = uri;
     }
 
-    public byte[] getFileByte(){
+    /**
+     * Method to get byte array content resolver from uri
+     *
+     * @return the file byte array from uri
+     * @throws AttachmentException if the file length is more than 25 MB
+     */
+    public byte[] getFileByte() throws AttachmentException {
+
+        // check attachment length
+        CommonFunctions.ByteUnitInformation byteUnitInformation = CommonFunctions.convertByteToHumanReadableUnit(getAttachmentSize());
+
+        // File is larger than 25 MB? throw exception
+        if (byteUnitInformation.getUnit() == CommonFunctions.ByteUnit.MEGA_BYTE && byteUnitInformation.getValue() > Variables.MAX_FILE_UPLOAD_SIZE_IN_MB) {
+            throw new AttachmentException("Attachment size is more than 25 MB");
+        }
 
         //get file path
         ByteArrayOutputStream byteArrayOutputStream;
         try {
             InputStream in = activity.getContentResolver().openInputStream(fileUri);
+
             byteArrayOutputStream = new ByteArrayOutputStream();
             int nRead;
-            byte[] d = new byte[16384];
 
+            byte[] d = new byte[16384];
             while ((nRead = in.read(d, 0, d.length)) != -1) {
                 byteArrayOutputStream.write(d, 0, nRead);
             }
         } catch (IOException e) {
             return null;
         }
-       return byteArrayOutputStream.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 
+    /**
+     * Method to get file name from uri
+     *
+     * @return the file name from uri
+     */
     public String getFileName() {
         String result;
         Uri fileNameUri = null;
@@ -134,6 +157,11 @@ public class AndroidUriToAttachmentUtility {
         return result;
     }
 
+    /**
+     * Get content type of file from uri
+     *
+     * @return the content type of file
+     */
     public String getMimeType() {
         String mimeType;
         if (ContentResolver.SCHEME_CONTENT.equals(fileUri.getScheme())) {
@@ -147,9 +175,39 @@ public class AndroidUriToAttachmentUtility {
         return mimeType;
     }
 
-    public Attachment getAttachmentInstance(){
+    /**
+     * Method to return a new instance of Attachment object
+     *
+     * @return a new instance of Attachment object with props from current class
+     * @throws AttachmentException if the file length is more than 25 MB
+     */
+
+    public Attachment getAttachmentInstance() throws AttachmentException {
 
         return new Attachment(getFileByte(), getFileName(), getMimeType());
+    }
+
+    /**
+     * Method to calculate the file byte length
+     *
+     * @return the file byte length from uri
+     */
+    private long getAttachmentSize() {
+
+        Cursor returnCursor = activity.getContentResolver().query(fileUri, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         * move to the first row in the Cursor, get the data,
+         * and display it.
+         */
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        long contentSize = returnCursor.getLong(sizeIndex);
+
+        // close the cursor
+        returnCursor.close();
+
+        return contentSize;
     }
 
 }

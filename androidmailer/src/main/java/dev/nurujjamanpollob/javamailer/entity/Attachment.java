@@ -66,10 +66,15 @@ import androidx.annotation.NonNull;
 import java.util.Arrays;
 import java.util.Objects;
 
+import dev.nurujjamanpollob.javamailer.CommonFunctions;
+import dev.nurujjamanpollob.javamailer.utility.AttachmentException;
+
 /**
  * Class to store attachment data
+ *
+ * This class is can't be inherited, can be used to store attachment data only.
  */
-public class Attachment {
+public final class Attachment {
 
     private final byte[] attachmentByte;
     private final String attachmentName;
@@ -82,10 +87,25 @@ public class Attachment {
      * @param attachmentName Name of the Attachment file
      * @param attachmentMimeType Mime type of Attachment file.
      */
-    public Attachment(byte[] attachmentByte, String attachmentName, String attachmentMimeType) {
+    public Attachment(byte[] attachmentByte, String attachmentName, String attachmentMimeType) throws AttachmentException {
+
+        // Check if byte length is greater than 25 MB, if yes throw exception
+        CommonFunctions.ByteUnitInformation byteUnitInformation = CommonFunctions.convertByteToHumanReadableUnit(attachmentByte.length);
+
+        if(byteUnitInformation.getUnit() == CommonFunctions.ByteUnit.MEGA_BYTE && byteUnitInformation.getValue() > 25){
+            throw new AttachmentException("Attachment size is greater than 25 MB, please attachments less than 25 MB");
+        }
+
         this.attachmentByte = attachmentByte;
         this.attachmentName = attachmentName;
         this.attachmentMimeType = attachmentMimeType;
+    }
+
+    /**
+     * Suppress default constructor for non-instantiability without arguments
+     */
+    private Attachment() {
+        throw new AssertionError("Class cannot be instantiated without arguments");
     }
 
     /**
