@@ -55,6 +55,8 @@
  *
  *     Done! Clean code!!
  * </code>
+ *
+ *
  */
 
 package dev.nurujjamanpollob.javamailer.entity;
