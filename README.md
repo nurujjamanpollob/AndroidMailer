@@ -14,7 +14,7 @@ You need to add following code in your app level <b>build.gradle</b> file:
 <pre>
 <code> 	
 dependencies {
-	implementation 'dev.nurujjamanpollob:androidmailer:2.2.0'
+	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.1'
 }
 </code>
 </pre>
