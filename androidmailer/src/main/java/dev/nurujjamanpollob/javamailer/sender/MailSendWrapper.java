@@ -81,11 +81,13 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import dev.nurujjamanpollob.javamailer.CommonFunctions;
 import dev.nurujjamanpollob.javamailer.backgroundtaskexecutor.NJPollobCustomAsyncTask;
 import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.security.SecurityDriver;
 import dev.nurujjamanpollob.javamailer.security.SecurityPlugin;
 import dev.nurujjamanpollob.javamailer.security.utility.SecurityPluginUtility;
+import dev.nurujjamanpollob.javamailer.utility.AttachmentException;
 
 /**
  * This class is designed to simplify mail sending experience in Android Application
@@ -376,7 +378,16 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     /**
      * Method to send a email to recipient email address with Multiple Attachment
      */
-    public void sendEmailWithAttachment(Attachment[] attachments){
+    public void sendEmailWithAttachment(Attachment[] attachments) throws AttachmentException{
+
+        if(attachments == null){
+            throw new AttachmentException("Attachments is null");
+        }
+
+        // Validate attachment size
+        CommonFunctions.validateAttachmentsSize(attachments);
+
+
         sendFileWithAttachment = true;
         // Assign variable values
         this.attachments = attachments;
@@ -389,7 +400,14 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
     /**
      * Method to send a email to recipient email address with a Single Attachment
      */
-    public void setSendFileWithAttachment(Attachment attachment){
+    public void setSendFileWithAttachment(Attachment attachment) throws AttachmentException {
+
+        if(attachment == null){
+            throw new AttachmentException("Attachment is null");
+        }
+
+        // Validate attachment size
+        CommonFunctions.validateAttachmentsSize(attachment);
 
         sendFileWithAttachment = true;
         this.attachments = new Attachment[1];
