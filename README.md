@@ -4,7 +4,7 @@
 
 This project is mainly use <b>javax.mail</b> and <b>javax.activation</b> packages to configure mail plugin and send email to target email address.
 
-Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to utilize effiecient background work processing.
+Also, this project uses <b>android.os</b> and <b>java.util.concurrent</b> to utilize efficient background work processing.
 
 
 ## Project Configuration
@@ -15,7 +15,7 @@ Add following code to your module's <b>build.gradle</b> file:
 <pre>
 <code> 	
 dependencies {
-	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.0'
+	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.1'
 }
 </code>
 </pre>
@@ -43,7 +43,7 @@ This library needs internet permission to send data from phone to remote email s
 
 So, as far, your project configuration is done. Let's dive into implementation part!
 
-## Implementaion
+## Implementation
 
 It's very easy to use this library to send email, and listen on email sending event, you can configure this library in your own way, and this library is designed to help save your time.
 
@@ -419,7 +419,7 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 </table>
 
 
-## Version 2.1 - Added @DecodeWith Coverage for Provider Class
+## Version 2.2.0 - Added @DecodeWith Coverage for Provider Class
 
 The implementation is straight-forward, you need to create a new class, that extends <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/JavaMailer/src/main/java/dev/nurujjamanpollob/javamailer/sender/Provider.java">Provider</a> class, and create constructors matching super, and the parameter you need to decode during class initialization, then mark those with <b>@DecodeWith</b>.
 
@@ -590,6 +590,9 @@ Then, set this custom provider configuration like this:
 
 Anyway, a full example can be found here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/EncryptedActivityExample.java">EncryptedActivityExample.java</a>
 
+# Version 2.2.1 - Add limit for attachment size
+
+This update brings a fix for mail attachment. As this library needs byte array from RAM memory, using larger attachment will cause Out Of Memory Exception. To fix, a implementation to check 
     
 
 ## Documentation
