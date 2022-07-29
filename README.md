@@ -412,7 +412,7 @@ For now, I never added any <b>encryption/decryption library</b>. Please use your
 	
 <tr>
 <td> serviceProviderConfiguration </td>
-<td> ☑(See 2.1 version reference) </td>
+<td> ☑(See 2.2.0 version reference) </td>
 </tr>
 
 </table>
