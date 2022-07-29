@@ -14,7 +14,7 @@ You need to add following code in your app level <b>build.gradle</b> file:
 <pre>
 <code> 	
 dependencies {
-	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.1'
+	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.2'
 }
 </code>
 </pre>
@@ -589,7 +589,7 @@ Then, set this custom provider configuration like this:
 
 Anyway, a full example can be found here: <a href="https://github.com/nurujjamanpollob/AndroidMailer/blob/master/app/src/main/java/dev/nurujjamanpollob/androidmailer/EncryptedActivityExample.java">EncryptedActivityExample.java</a>
 
-# Update 2.2.2 - Added check for attachment size
+## Update 2.2.2 - Added check for attachment size
 
 This library usages a RAW byte array to store attachment data, which stores in your application memory. Larger attachment will cause Out Of Memory Exception. To avoid this, this library measure the total attachment size, and if the total size is larger than 25MB(Single or multiple length), It will then throw exception.
 This check ensures consistency for your application performance.
