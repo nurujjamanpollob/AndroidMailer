@@ -86,6 +86,7 @@ import dev.nurujjamanpollob.javamailer.entity.Attachment;
 import dev.nurujjamanpollob.javamailer.sender.MailSendWrapper;
 import dev.nurujjamanpollob.javamailer.sender.Providers;
 import dev.nurujjamanpollob.javamailer.utility.AndroidUriToAttachmentUtility;
+import dev.nurujjamanpollob.javamailer.utility.AttachmentException;
 
 
 /**
@@ -240,7 +241,11 @@ public class EncryptedActivityExample extends Activity {
                 // get content URI
                 Uri contentUri = data != null ? data.getData() : null;
                 // Get attachment from URI
-                attachment = new AndroidUriToAttachmentUtility(contentUri, EncryptedActivityExample.this).getAttachmentInstance();
+                try {
+                    attachment = new AndroidUriToAttachmentUtility(contentUri, EncryptedActivityExample.this).getAttachmentInstance();
+                } catch (AttachmentException e) {
+                    e.printStackTrace();
+                }
 
             } else {
                 attachment = null;
