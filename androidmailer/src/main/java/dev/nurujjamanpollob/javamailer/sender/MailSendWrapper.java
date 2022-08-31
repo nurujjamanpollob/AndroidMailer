@@ -67,10 +67,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -224,10 +224,20 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
                 for(Attachment attachment : attachments){
                     // Create attachment part
                     MimeBodyPart attachmentPart = new MimeBodyPart();
-                    // assign file byte with mime type
-                    attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(attachment.getAttachmentByte(), attachment.getAttachmentMimeType())));
-                    // Set attachment file name
-                    attachmentPart.setFileName(attachment.getAttachmentName());
+                    // assign file byte or path
+                    if(attachment.isAttachmentFromUri()){
+                       if (attachment.getAttachmentUri() != null) {
+                           attachmentPart.setDataHandler(new DataHandler(new FileDataSource(attachment.getAttachmentUri().getPath())));
+                       } else {
+
+                           throw new AttachmentException("Attachment Uri is null, the library can't send the attachment");
+                       }
+                    } else {
+                        attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(attachment.getAttachmentByte(), attachment.getAttachmentMimeType())));
+                        // Set attachment file name
+                        attachmentPart.setFileName(attachment.getAttachmentName());
+                    }
+
                     // attach to multipart
                     mimeMultipart.addBodyPart(attachmentPart);
                 }
@@ -244,7 +254,7 @@ public class MailSendWrapper extends NJPollobCustomAsyncTask<Void, String> {
 
         }
         // Email send exception
-        catch (MessagingException messagingException){
+        catch (MessagingException | AttachmentException messagingException){
             // Get error message and update to variable
             this.errorMessage = messagingException.getMessage();
 
