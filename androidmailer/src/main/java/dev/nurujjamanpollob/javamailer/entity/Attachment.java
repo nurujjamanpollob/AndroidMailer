@@ -61,7 +61,10 @@
 
 package dev.nurujjamanpollob.javamailer.entity;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -79,6 +82,7 @@ public final class Attachment {
     private final byte[] attachmentByte;
     private final String attachmentName;
     private final String attachmentMimeType;
+    private final Uri attachmentUri;
 
 
     /**
@@ -99,6 +103,24 @@ public final class Attachment {
         this.attachmentByte = attachmentByte;
         this.attachmentName = attachmentName;
         this.attachmentMimeType = attachmentMimeType;
+        this.attachmentUri = null;
+    }
+
+    /**
+     * This constructor is meant to be used for creating Attachment object from existing attachment file URI.
+     */
+    public Attachment(Uri attachmentUri) throws AttachmentException {
+        // Check if byte length is greater than 25 MB, if yes throw exception
+        CommonFunctions.ByteUnitInformation byteUnitInformation = CommonFunctions.convertByteToHumanReadableUnit(attachmentUri.getPath().length());
+
+        if(byteUnitInformation.getUnit() == CommonFunctions.ByteUnit.MEGA_BYTE && byteUnitInformation.getValue() > 25){
+            throw new AttachmentException("Attachment size is greater than 25 MB, please attachments less than 25 MB");
+        }
+
+        this.attachmentByte = null;
+        this.attachmentName = null;
+        this.attachmentMimeType = null;
+        this.attachmentUri = attachmentUri;
     }
 
     /**
@@ -163,5 +185,21 @@ public final class Attachment {
      */
     public boolean isAttachmentNotNull(){
         return (attachmentByte != null ? attachmentByte.length : 0) > 0;
+    }
+
+    /**
+     * Method to return the attachment file URI
+     * @return the attachment file URI
+     */
+    @Nullable
+    public Uri getAttachmentUri() {
+        return attachmentUri;
+    }
+
+    /**
+     * Method that used to return attachment is from Uri or not
+     */
+    public boolean isAttachmentFromUri() {
+        return attachmentUri != null && attachmentByte == null;
     }
 }
