@@ -70,7 +70,7 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'io.github.nurujjamanpollob.androidmailer'
-    PUBLISH_VERSION = '2.2.2'
+    PUBLISH_VERSION = '2.2.3'
     PUBLISH_ARTIFACT_ID = 'androidmailer'
     PUBLISH_DESCRIPTION = 'Android Library to send email using SMTP server'
     PUBLISH_URL = 'https://github.com/nurujjamanpollob/AndroidMailer'
@@ -133,7 +133,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     embed 'com.sun.mail:android-mail:1.6.6'
