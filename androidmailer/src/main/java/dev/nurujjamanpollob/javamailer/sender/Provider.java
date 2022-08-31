@@ -255,7 +255,7 @@ public class Provider {
         SecurityPluginUtility securityPluginUtility = new SecurityPluginUtility(constructorIndex, super.getClass(), parameterIndex);
 
         // Check if annotation is present and the constructor index is present
-        if(securityPluginUtility.isConstructorParameterIsAnnotatedWithAnnotationClass() && securityPluginUtility.isConstructorPresent(constructorIndex)){
+        if(securityPluginUtility.isConstructorPresent() && securityPluginUtility.isConstructorParameterIsAnnotatedWithAnnotationClass()){
 
             // Return the decoded value
             return new SecurityDriver(baseValue, securityPluginUtility.getDecoderClassForSecurityDriver()).getDecodedString();
