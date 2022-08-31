@@ -80,15 +80,6 @@ import dev.nurujjamanpollob.javamailer.sender.Provider;
 public class ProviderSecure extends Provider {
 
 
-    public ProviderSecure(
-            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,
-            @DecodeWith(decoder = DemoDecoder.class) String mailSMTPPortAddress,
-            @DecodeWith(decoder = DemoDecoder.class) String socketFactoryPortAddress,
-            @DecodeWith(decoder = DemoDecoder.class) String javaSocketFactoryClassName,
-            @DecodeWith(decoder = DemoDecoder.class) Boolean isUseAuth) throws Exception{
-
-        super(mailSMTPHostAddress, mailSMTPPortAddress, socketFactoryPortAddress, javaSocketFactoryClassName, isUseAuth);
-    }
 
     public ProviderSecure(
             @DecodeWith(decoder = DemoDecoder.class) String mailSMTPHostAddress,

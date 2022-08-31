@@ -153,6 +153,7 @@ public class EncryptedActivityExample extends Activity {
     private void sendEmailUsingJavaMailer(String receiverMailAdd, String subject, String message) throws Exception {
 
 
+
         // Create service provider configuration
         ProviderSecure serviceProviderConfig = new ProviderSecure(
                 MAIL_HOST,
