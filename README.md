@@ -14,7 +14,7 @@ You need to add following code in your app level <b>build.gradle</b> file:
 <pre>
 <code> 	
 dependencies {
-	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.2'
+	implementation 'io.github.nurujjamanpollob.androidmailer:androidmailer:2.2.3'
 }
 </code>
 </pre>
@@ -594,6 +594,11 @@ Anyway, a full example can be found here: <a href="https://github.com/nurujjaman
 This library usages a RAW byte array to store attachment data, which stores in your application memory. Larger attachment will cause Out Of Memory Exception. To avoid this, this library measure the total attachment size, and if the total size is larger than 25MB(Single or multiple length), It will then throw exception.
 This check ensures consistency for your application performance.
     
+## Update 2.2.3 - Added check for class that Inherits Provider class
+
+During implementation, I completely forget about the class that inherits Provider class, and do not override two constructors that available. So, my discovery is, overriding single constructor is cause exception, so a fix is added.
+
+Also, You can upload unlimited file size with a Uri instance from file, this support is added.
 
 ## Documentation
 
