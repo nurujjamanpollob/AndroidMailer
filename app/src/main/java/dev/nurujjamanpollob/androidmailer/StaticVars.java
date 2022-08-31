@@ -68,9 +68,9 @@ public class StaticVars {
 
     public static final Boolean isUseAuth = true;
     public static final Boolean isUseTls = true;
-    public static final String smtpPortAddress = "465";
-    public static final String socketFactoryPortAddress = "465";
-    public static final String MAIL_SENDER_SEND_FROM_ADDRESS = "fromaddress@domain.com";
-    public static final String MAIL_HOST = "mail.domain.com";
-    public static final String MAIL_PASSWORD = "mailbosspasswordhere";
+    public static final String smtpPortAddress = "";
+    public static final String socketFactoryPortAddress = "";
+    public static final String MAIL_SENDER_SEND_FROM_ADDRESS = "";
+    public static final String MAIL_HOST = "";
+    public static final String MAIL_PASSWORD = "";
 }
